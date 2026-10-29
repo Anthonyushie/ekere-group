@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<title>Ekere Group — The Title Sequence</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;500&family=Archivo:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--orange:#DD5F26;--black:#121212;--bone:#F0EBE1;--delta:#1F4D40}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{width:1440px;height:900px;overflow:hidden;background:var(--orange);
+    font-family:'Archivo',sans-serif;color:var(--black);position:relative}
+  .paper{position:absolute;inset:0;pointer-events:none;opacity:.22;
+    background-image:radial-gradient(rgba(18,18,18,.5) .6px, transparent .7px);
+    background-size:3px 3px}
+
+  /* the cut-paper figure: one delta channel splitting three ways */
+  .figure{position:absolute;left:0;top:0;height:900px;width:760px}
+  .figure svg{display:block;height:100%;width:100%}
+
+  .cardno{position:absolute;top:44px;right:56px;font-family:'Oswald';font-weight:300;
+    font-size:12px;letter-spacing:.44em;text-transform:uppercase;color:var(--black)}
+  .nav{position:absolute;top:44px;left:56px;display:flex;gap:30px;font-family:'Oswald';font-weight:300;
+    font-size:12px;letter-spacing:.3em;text-transform:uppercase;z-index:4}
+  .nav span{font-weight:200}.nav b{font-weight:500}
+
+  .stack{position:absolute;right:56px;top:252px;width:620px;z-index:3;text-align:right}
+  h1{margin:0;font-family:'Oswald';font-weight:200;
+    font-size:92px;line-height:.98;letter-spacing:.055em;text-transform:uppercase;color:var(--black)}
+  h1 .shift{display:block;margin-right:-14px;transform:translateY(-5px)}
+  h1 .fill{font-weight:500}
+  .lede{margin:38px 0 0 auto;max-width:46ch;font-size:16px;line-height:1.6;color:#2A1A12}
+
+  .act{display:inline-flex;align-items:center;gap:15px;margin-top:44px;
+    background:var(--black);color:var(--bone);padding:18px 30px;
+    font-family:'Oswald';font-weight:500;font-size:14px;letter-spacing:.22em;text-transform:uppercase}
+  .act i{display:block;width:34px;height:1px;background:var(--bone)}
+
+  /* the jittering hand-drawn line marks the live card */
+  .acts{position:absolute;left:56px;bottom:44px;display:flex;gap:40px;align-items:flex-end;z-index:4;
+    font-family:'Oswald';font-weight:300;font-size:12px;letter-spacing:.26em;text-transform:uppercase}
+  .acts span{font-weight:200;padding-bottom:9px}
+  .acts .live{opacity:1;font-weight:500;border-bottom:2px solid var(--black);padding-bottom:7px}
+  .scrub{position:absolute;right:56px;bottom:46px;font-family:'Oswald';font-weight:300;font-size:11px;
+    letter-spacing:.3em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="paper"></div>
+
+<div class="figure">
+  <svg viewBox="0 0 760 900" preserveAspectRatio="xMinYMid slice" aria-hidden="true">
+    <!-- one channel entering, splitting into three: the group and its ventures -->
+    <path fill="#121212" d="M-40 352 C 96 340, 190 356, 262 400 C 330 442, 352 470, 420 470 L 470 470 L 470 516 L 418 516 C 322 516, 286 480, 232 444 C 168 402, 78 392, -40 406 Z"/>
+    <path fill="#121212" d="M470 470 C 556 470, 608 414, 648 342 C 676 290, 700 252, 760 236 L 760 288 C 724 302, 706 332, 684 374 C 638 460, 574 516, 470 516 Z"/>
+    <path fill="#121212" d="M470 470 C 560 470, 616 528, 652 604 C 678 658, 702 692, 760 708 L 760 656 C 726 642, 708 610, 686 566 C 642 478, 576 424, 470 424 Z" opacity=".86"/>
+    <path fill="#121212" d="M470 446 L 530 446 C 556 446, 572 462, 572 493 C 572 524, 556 540, 530 540 L 470 540 Z"/>
+    <circle cx="470" cy="493" r="74" fill="#121212"/>
+    <circle cx="470" cy="493" r="40" fill="#DD5F26"/>
+    <!-- hand-drawn jitter stroke -->
+    <path d="M60 760 C 150 752, 186 772, 268 760 C 344 749, 392 770, 470 758" stroke="#121212" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".8"/>
+  </svg>
+</div>
+
+<div class="nav"><b>Ekere Group</b><span>About</span><span>Ventures</span><span>Impact</span><span>Contact</span></div>
+<div class="cardno">Card 01 / 04</div>
+
+<div class="stack">
+  <h1>Building<span class="shift">businesses.</span><span class="fill">Advancing</span><span class="shift">progress.</span></h1>
+  <p class="lede">One group. Three ventures. Each one published at the stage it has actually reached — and not a stage further.</p>
+  <a class="act">Open a conversation <i></i></a>
+</div>
+
+<div class="acts">
+  <span class="live">I · The group</span>
+  <span>II · Education</span>
+  <span>III · Property</span>
+  <span>IV · Waste to energy</span>
+</div>
+<div class="scrub">Scroll to advance</div>
+</body>
+</html>

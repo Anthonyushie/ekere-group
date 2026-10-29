@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<title>Ekere Group — The Woven Instruction</title>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600&family=Martian+Mono:wght@400;600&family=Archivo:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--midnight:#0E1430;--ink:#080A16;--gold:#C9A227;--cream:#EDE3CC;--warp:#1A2246}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{width:1440px;height:900px;overflow:hidden;background:var(--midnight);color:var(--cream);
+    font-family:'Archivo',sans-serif;position:relative}
+  /* the warp: fixed vertical threads under tension, running the full height */
+  .warp{position:absolute;inset:0;pointer-events:none;
+    background-image:repeating-linear-gradient(90deg,
+      rgba(237,227,204,.07) 0 1px, transparent 1px 9px)}
+  .sheen{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 70% 18%, rgba(201,162,39,.14), transparent 55%)}
+
+  nav{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:baseline;
+    padding:34px 64px 0}
+  .mark{font-family:'Bodoni Moda';font-size:23px;letter-spacing:.14em;text-transform:uppercase}
+  .nav-links{display:flex;gap:32px;font-family:'Martian Mono';font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:#B3AC97}
+  .nav-links b{color:var(--cream);font-weight:600}
+
+  .loom{position:relative;z-index:3;padding:0 64px;margin-top:26px;height:452px}
+  /* the figure resolving out of thread decisions */
+  .figure{position:absolute;right:64px;top:-10px;width:720px;height:448px}
+  h1{position:relative;margin:54px 0 0;max-width:15ch;
+    font-family:'Bodoni Moda';font-weight:400;font-size:74px;line-height:1.03;letter-spacing:-.012em}
+  h1 em{font-style:italic;color:var(--gold)}
+  .lede{position:relative;margin:26px 0 0;max-width:40ch;font-size:15.5px;line-height:1.62;color:#C6BFA9}
+
+  .act{position:relative;display:inline-flex;align-items:center;gap:14px;margin-top:32px;
+    border:1px solid var(--gold);color:var(--gold);padding:15px 26px;
+    font-family:'Martian Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .act i{width:26px;height:1px;background:var(--gold);display:block}
+
+  /* the instruction band: ledger rows, each thread decision traceable */
+  .band{position:absolute;left:0;right:0;bottom:0;background:var(--cream);color:var(--ink);z-index:4;
+    padding:22px 64px 26px;box-shadow:0 -22px 40px -24px rgba(0,0,0,.8)}
+  .band-head{display:grid;grid-template-columns:52px 1fr 190px 150px;gap:24px;
+    font-family:'Martian Mono';font-size:9px;letter-spacing:.17em;text-transform:uppercase;
+    color:#5E5847;padding-bottom:10px;border-bottom:1px solid rgba(8,10,22,.3)}
+  .row{display:grid;grid-template-columns:52px 1fr 190px 150px;gap:24px;align-items:center;
+    padding:13px 0;border-bottom:1px solid rgba(8,10,22,.14);font-family:'Martian Mono';font-size:11.5px}
+  .row .card{color:#5E5847;font-size:10px}
+  .row .name{font-family:'Archivo';font-size:16px;font-weight:500;letter-spacing:.005em}
+  .row .state{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+  .s-woven{color:#2F5F3A}
+  .s-raised{color:#8A5A12}
+  .s-skipped{color:#7A2418}
+  /* the lift diagram: which threads this row actually raised */
+  .lift{display:flex;gap:3px;align-items:flex-end;height:18px}
+  .lift span{width:5px;background:rgba(8,10,22,.16)}
+  .lift span.up{background:var(--ink)}
+</style>
+</head>
+<body>
+<div class="warp"></div>
+<div class="sheen"></div>
+
+<nav>
+  <div class="mark">Ekere Group</div>
+  <div class="nav-links"><b>About</b><span>Ventures</span><span>Impact</span><span>News</span><span>Contact</span></div>
+</nav>
+
+<section class="loom">
+  <div class="figure">
+    <svg viewBox="0 0 720 448" width="720" height="448" aria-hidden="true">
+      <defs>
+        <pattern id="cell" width="12" height="12" patternUnits="userSpaceOnUse">
+          <rect width="12" height="12" fill="none"/>
+          <rect x="0" y="0" width="10" height="10" fill="#C9A227"/>
+        </pattern>
+        <clipPath id="fig">
+          <!-- a delta figure: one channel gathering, three distributaries leaving -->
+          <path d="M26 224 C 120 196, 212 212, 286 252 C 330 276, 352 284, 392 272
+                   C 452 254, 486 196, 520 128 C 544 80, 580 50, 650 40
+                   L 660 86 C 610 96, 586 122, 566 164 C 524 252, 470 312, 392 320
+                   C 330 326, 296 306, 254 282 C 186 244, 112 238, 30 262 Z"/>
+          <path d="M392 320 C 468 330, 512 384, 544 436 L 596 436 C 558 366, 494 296, 392 288 Z"/>
+          <path d="M286 252 C 268 300, 240 348, 190 392 L 246 404 C 296 356, 324 304, 338 262 Z" />
+        </clipPath>
+      </defs>
+      <rect width="720" height="448" fill="url(#cell)" clip-path="url(#fig)"/>
+      <!-- instruction rows passing above the figure -->
+      <g fill="#EDE3CC" opacity=".5">
+        <rect x="26" y="10" width="634" height="1"/>
+        <rect x="26" y="19" width="634" height="1"/>
+      </g>
+      <g fill="#EDE3CC">
+        <circle cx="60" cy="15" r="2.6"/><circle cx="96" cy="15" r="2.6"/><circle cx="168" cy="15" r="2.6"/>
+        <circle cx="240" cy="15" r="2.6"/><circle cx="264" cy="15" r="2.6"/><circle cx="348" cy="15" r="2.6"/>
+        <circle cx="420" cy="15" r="2.6"/><circle cx="492" cy="15" r="2.6"/><circle cx="528" cy="15" r="2.6"/>
+        <circle cx="600" cy="15" r="2.6"/>
+      </g>
+    </svg>
+  </div>
+  <h1>One warp,<br>held under<br><em>tension.</em></h1>
+  <p class="lede">A parent company is thousands of small decisions resolving into one visible figure. Every thread on this site traces back to the instruction that raised it.</p>
+  <a class="act">Open a conversation <i></i></a>
+</section>
+
+<section class="band">
+  <div class="band-head">
+    <span>Card</span><span>Venture</span><span>Threads raised</span><span>State</span>
+  </div>
+  <div class="row">
+    <span class="card">C·001</span>
+    <span class="name">Community Education</span>
+    <span class="lift"><span class="up" style="height:18px"></span><span class="up" style="height:14px"></span><span style="height:7px"></span><span class="up" style="height:16px"></span><span style="height:7px"></span><span class="up" style="height:11px"></span><span style="height:7px"></span><span class="up" style="height:18px"></span></span>
+    <span class="state s-woven">Woven</span>
+  </div>
+  <div class="row">
+    <span class="card">C·002</span>
+    <span class="name">Property &amp; Development</span>
+    <span class="lift"><span class="up" style="height:13px"></span><span style="height:7px"></span><span class="up" style="height:16px"></span><span style="height:7px"></span><span style="height:7px"></span><span class="up" style="height:10px"></span><span style="height:7px"></span><span style="height:7px"></span></span>
+    <span class="state s-raised">Raised, not woven</span>
+  </div>
+  <div class="row" style="border-bottom:none">
+    <span class="card">C·003</span>
+    <span class="name">Waste to Energy</span>
+    <span class="lift"><span style="height:7px"></span><span style="height:7px"></span><span style="height:7px"></span><span style="height:7px"></span><span style="height:7px"></span><span style="height:7px"></span><span style="height:7px"></span><span style="height:7px"></span></span>
+    <span class="state s-skipped">Encoded only</span>
+  </div>
+</section>
+</body>
+</html>

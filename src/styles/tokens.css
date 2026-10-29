@@ -1,0 +1,220 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   §2 — Tokens. Authored once. Nothing downstream may hardcode a hex value.
+
+   Names are taken verbatim from BUILD-BRIEF.md §2.1 and §2.4. Where §2.2,
+   §2.3 and §2.5 give a value but no name, the name is the brief's own role
+   label for it. No token here is absent from §2.
+   ────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ══ §2.1 Colour ══════════════════════════════════════════════════════
+     Committed strategy: the iroko ground owns 100% of every surface.
+     There is no light mode and there is no second theme. Brass is the only
+     thing that glows and it is rationed.
+
+     Contrast, verified by measurement — do not darken any of these. The
+     first version of the comp used #6E6358 for ash and failed at 3.26:1;
+     that is the trap on a ground this dark.                            */
+
+  /* ground */
+  --iroko: #15100c; /* page ground, everywhere */
+  --iroko-deep: #0d0a07; /* recessed panels, the reverse face */
+  --iroko-wash: rgba(0, 0, 0, 0.42); /* recency wash, left-bleeding */
+
+  /* ink */
+  --sapwood: #e9e2d3; /* primary text, display type */
+  --sapwood-lift: #f6f1e6; /* the one recent register name */
+  --bark: #b5ab9c; /* standfirst, secondary prose */
+  --bark-dim: #9a907f; /* register notes */
+  --ash: #8f8475; /* mono apparatus, labels, meta */
+
+  /* signal */
+  --brass: #b8863c; /* live status, primary action, accents */
+  --brass-lip: #8a6227; /* the 2px underlip on brass plates */
+  --brass-ink: #160f06; /* text ON brass */
+  --oxblood: #8c2f1e; /* "in development" borders */
+  --oxblood-ink: #c2634d; /* "in development" text */
+
+  /* rules */
+  --groove: rgba(110, 99, 88, 0.85);
+  --groove-fade: rgba(110, 99, 88, 0.15);
+
+  /* ══ §2.2 Type ════════════════════════════════════════════════════════
+     Three faces, all OFL, all self-hosted. Every display declaration
+     carries the condensed fallback: with a default serif fallback the home
+     h1 measures 1417px against an 876px box and the pre-load frame reflows
+     from seven lines to three. A condensed fallback keeps it invisible. */
+
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-text: "Archivo", system-ui, sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, monospace;
+
+  /* display-1 — home h1.  104px / .845 / -.022em  BSD 700 uppercase */
+  --display-1-weight: 700;
+  --display-1-lh: 0.845;
+  --display-1-tracking: -0.022em;
+
+  /* display-2 — section heads.  64px / .94 / -.018em  BSD 700 uppercase */
+  --display-2-weight: 700;
+  --display-2-lh: 0.94;
+  --display-2-tracking: -0.018em;
+
+  /* display-3 — register names.  43px / 1 / .005em  BSD 500 uppercase */
+  --display-3-weight: 500;
+  --display-3-lh: 1;
+  --display-3-tracking: 0.005em;
+
+  /* mark — the wordmark.  25px / 1 / .22em  BSD 900 uppercase */
+  --mark: 25px;
+  --mark-weight: 900;
+  --mark-lh: 1;
+  --mark-tracking: 0.22em;
+
+  /* standfirst.  15.5px / 1.62  Archivo 400, 42ch max */
+  --standfirst: 15.5px;
+  --standfirst-weight: 400;
+  --standfirst-lh: 1.62;
+  --standfirst-measure: 42ch;
+
+  /* body.  16px / 1.65  Archivo 400, 68ch max */
+  --body: 16px;
+  --body-weight: 400;
+  --body-lh: 1.65;
+  --body-measure: 68ch;
+
+  /* note.  13px / 1.5  Archivo 400, 58ch max */
+  --note: 13px;
+  --note-weight: 400;
+  --note-lh: 1.5;
+  --note-measure: 58ch;
+
+  /* nav.  12.5px / 1 / .16em  Archivo 500 uppercase */
+  --nav: 12.5px;
+  --nav-weight: 500;
+  --nav-lh: 1;
+  --nav-tracking: 0.16em;
+
+  /* mono-label.  11.5px / 1 / .08em  Martian Mono 400 uppercase */
+  --mono-label: 11.5px;
+  --mono-label-weight: 400;
+  --mono-label-lh: 1;
+  --mono-label-tracking: 0.08em;
+
+  /* mono-meta.  11px / 2 / .02em  Martian Mono 400 uppercase */
+  --mono-meta: 11px;
+  --mono-meta-weight: 400;
+  --mono-meta-lh: 2;
+  --mono-meta-tracking: 0.02em;
+
+  /* The 11px floor. No functional text goes below this — not labels, not
+     ordinals, not meta rows, not a letterspaced micro-label that looks
+     decorative. The status slot label is the most important text on the
+     page after the headline. Only non-interactive legal smallprint may
+     sit at --smallprint, and nothing interactive ever may.             */
+  --text-floor: 11px;
+  --smallprint: 10px;
+
+  /* Tracking floor. Nothing is set tighter than this. */
+  --tracking-floor: -0.04em;
+
+  /* ══ §2.3 Space and grid ══════════════════════════════════════════════
+     4px base. Only these steps.                                        */
+
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-72: 72px;
+  --space-96: 96px;
+  --space-128: 128px;
+  --space-160: 160px;
+
+  --content-max: 1296px;
+  --col-gap: 24px; /* 12 columns, 24px column gap */
+
+  /* More space above a heading than below it — always. */
+  --section-head-above: var(--space-128);
+  --section-head-below: var(--space-48);
+
+  /* The declaration register. A fixed 316px right column starves the
+     headline below 1360px and the display type overflows, so the right
+     track is a minmax and the gap is fluid.                            */
+  --declaration-cols: 1fr minmax(260px, 316px);
+  --declaration-gap: clamp(40px, 5vw, 72px);
+
+  /* Register height is fixed, not min-height. This is load-bearing: a
+     venture with nothing in it shows its own empty band rather than
+     collapsing, so absence is legible instead of hidden.               */
+  --register-h: 104px;
+  --register-h-mobile: 92px;
+
+  /* The reserved status slot. Always rendered, even when the content is
+     "Not yet begun".                                                   */
+  --slot-w: 224px;
+  --slot-h: 46px;
+
+  /* ══ §2.4 Fluidity ════════════════════════════════════════════════════
+     No fixed-pixel grid that wraps a hundred pixels narrower. The first
+     viewport must still hold at 1280 and 1600, not only at 1440. The
+     display-1 ceiling also keeps display type under 6rem on mobile.    */
+
+  --display-1: clamp(58px, 7.25vw, 104px);
+  --display-2: clamp(34px, 4.6vw, 64px);
+  --display-3: clamp(27px, 3.1vw, 43px);
+  --gutter: clamp(24px, 5vw, 72px); /* 72 desktop · 40 tablet · 24 mobile */
+
+  /* ══ §2.5 Material ════════════════════════════════════════════════════
+     Two layers over the ground, both pointer-events: none. Alpha values
+     the brief expresses as "colour at alpha" are derived from the §2.1
+     tokens so they cannot drift; plain black ramps stay literal.       */
+
+  /* Grain — the incision running the length of the beam. */
+  --grain-ink: color-mix(in srgb, var(--sapwood) 5.5%, transparent);
+  --grain-line: 1px;
+  --grain-pitch: 7px;
+  --grain-blend: soft-light;
+  --grain: repeating-linear-gradient(
+    90deg,
+    var(--grain-ink) 0 var(--grain-line),
+    transparent var(--grain-line) var(--grain-pitch)
+  );
+
+  /* Vignette — light falling on carved wood from upper left. */
+  --vignette-light: color-mix(in srgb, var(--sapwood) 9%, transparent);
+  --vignette:
+    radial-gradient(
+      130% 95% at 22% 8%,
+      var(--vignette-light) 0%,
+      rgba(0, 0, 0, 0) 48%
+    ),
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.45) 100%);
+
+  /* Groove — the only divider. 1px, fading at both ends. */
+  --groove-h: 1px;
+  --groove-line: linear-gradient(
+    90deg,
+    var(--groove-fade),
+    var(--groove) 12%,
+    var(--groove) 88%,
+    var(--groove-fade)
+  );
+
+  /* Chevron band — the one authored ornament. Used only between major
+     registers, never more than three times on a page.                  */
+  --chevron-h: 9px;
+  --chevron-w: 18px;
+  --chevron-opacity: 0.62;
+  --chevron-cut:
+    linear-gradient(135deg, var(--brass) 25%, transparent 25.5%),
+    linear-gradient(225deg, var(--brass) 25%, transparent 25.5%);
+
+  /* ══ Resting interaction timing (§4) ══════════════════════════════════
+     The only motion Stage 0 ships, because §2.6 specifies the brass
+     plate hover and active behaviour. Everything else in §4 is Stage 5. */
+  --rest-duration: 160ms;
+  --rest-ease: ease-out;
+}

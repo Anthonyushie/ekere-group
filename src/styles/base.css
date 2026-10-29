@@ -1,0 +1,222 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Ground, material layers, type roles, dividers, browser surfaces.
+   Everything here reads from tokens.css. No value is restated.
+   ────────────────────────────────────────────────────────────────────── */
+
+/* ══ The ground ═════════════════════════════════════════════════════════
+   The iroko ground owns 100% of every surface. There is no light mode and
+   there is no second theme, so there is no prefers-color-scheme block. */
+
+html {
+  background: var(--iroko);
+  /* §2.7 */
+  scrollbar-color: var(--ash) var(--iroko-deep);
+}
+
+body {
+  margin: 0;
+  background: var(--iroko);
+  color: var(--sapwood);
+  font-family: var(--font-text);
+  font-size: var(--body);
+  font-weight: var(--body-weight);
+  line-height: var(--body-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ══ §2.5 Material layers ═══════════════════════════════════════════════
+   Two layers over the ground, both pointer-events: none. Fixed to the
+   viewport so the beam reads as one continuous piece of wood rather than
+   a texture that scrolls out from under the type.                      */
+
+.material {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.material::before,
+.material::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* Grain — the incision running the length of the beam. */
+.material::before {
+  background-image: var(--grain);
+  mix-blend-mode: var(--grain-blend);
+}
+
+/* Vignette — light falling on carved wood from upper left. */
+.material::after {
+  background: var(--vignette);
+}
+
+/* Everything that is not material sits above it. */
+.sheet {
+  position: relative;
+  z-index: 1;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ══ §2.5 Dividers and the one ornament ═════════════════════════════════ */
+
+/* The only divider. 1px, fading at both ends. */
+.groove {
+  height: var(--groove-h);
+  background: var(--groove-line);
+}
+
+/* Used only between major registers, never more than three times on a page. */
+.chevron {
+  height: var(--chevron-h);
+  background-image: var(--chevron-cut);
+  background-size: var(--chevron-w) var(--chevron-h);
+  background-repeat: repeat-x;
+  opacity: var(--chevron-opacity);
+}
+
+/* ══ §2.2 Type roles ════════════════════════════════════════════════════
+   One class per row of the §2.2 ramp. Downstream sets a role, never a
+   size. Headings whose breaks are authored with <br> get text-wrap:
+   nowrap, not balance — balance re-distributes across the authored breaks
+   and silently adds a fourth line. Headings that wrap naturally get
+   balance, via .t-balance.                                             */
+
+.t-display-1,
+.t-display-2,
+.t-display-3,
+.t-mark {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.t-display-1 {
+  font-size: var(--display-1);
+  font-weight: var(--display-1-weight);
+  line-height: var(--display-1-lh);
+  letter-spacing: var(--display-1-tracking);
+}
+
+.t-display-2 {
+  font-size: var(--display-2);
+  font-weight: var(--display-2-weight);
+  line-height: var(--display-2-lh);
+  letter-spacing: var(--display-2-tracking);
+}
+
+.t-display-3 {
+  font-size: var(--display-3);
+  font-weight: var(--display-3-weight);
+  line-height: var(--display-3-lh);
+  letter-spacing: var(--display-3-tracking);
+}
+
+.t-mark {
+  font-size: var(--mark);
+  font-weight: var(--mark-weight);
+  line-height: var(--mark-lh);
+  letter-spacing: var(--mark-tracking);
+}
+
+.t-standfirst {
+  font-family: var(--font-text);
+  font-size: var(--standfirst);
+  font-weight: var(--standfirst-weight);
+  line-height: var(--standfirst-lh);
+  max-width: var(--standfirst-measure);
+  color: var(--bark);
+  margin: 0;
+}
+
+.t-body {
+  font-family: var(--font-text);
+  font-size: var(--body);
+  font-weight: var(--body-weight);
+  line-height: var(--body-lh);
+  max-width: var(--body-measure);
+  margin: 0;
+}
+
+.t-note {
+  font-family: var(--font-text);
+  font-size: var(--note);
+  font-weight: var(--note-weight);
+  line-height: var(--note-lh);
+  max-width: var(--note-measure);
+  color: var(--bark-dim);
+  margin: 0;
+}
+
+.t-nav {
+  font-family: var(--font-text);
+  font-size: var(--nav);
+  font-weight: var(--nav-weight);
+  line-height: var(--nav-lh);
+  letter-spacing: var(--nav-tracking);
+  text-transform: uppercase;
+}
+
+.t-mono-label {
+  font-family: var(--font-mono);
+  font-size: var(--mono-label);
+  font-weight: var(--mono-label-weight);
+  line-height: var(--mono-label-lh);
+  letter-spacing: var(--mono-label-tracking);
+  text-transform: uppercase;
+  color: var(--ash);
+}
+
+.t-mono-meta {
+  font-family: var(--font-mono);
+  font-size: var(--mono-meta);
+  font-weight: var(--mono-meta-weight);
+  line-height: var(--mono-meta-lh);
+  letter-spacing: var(--mono-meta-tracking);
+  text-transform: uppercase;
+  color: var(--ash);
+}
+
+/* Line breaking, §2.2. Authored <br> breaks get nowrap; natural wraps get
+   balance. At balance, "Creating lasting impact." split in two and pushed
+   the base register 163px below the fold. */
+.t-nowrap {
+  text-wrap: nowrap;
+}
+.t-balance {
+  text-wrap: balance;
+}
+
+/* Body copy gets tabular figures wherever a figure appears. */
+.t-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ══ §2.7 Browser surfaces ══════════════════════════════════════════════
+   The cheapest signal that a page was built rather than assembled.    */
+
+::selection {
+  background: var(--brass);
+  color: var(--brass-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+}
+
+input,
+textarea {
+  caret-color: var(--brass);
+}
+
+a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}

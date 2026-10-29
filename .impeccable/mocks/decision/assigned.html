@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<title>Ekere Group — The Carved Register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Archivo:wght@400;500;600&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --iroko:#15100C;
+    --iroko-deep:#0D0A07;
+    --sapwood:#E9E2D3;
+    --brass:#B8863C;
+    --oxblood:#8C2F1E;
+    --ash:#8F8475;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    width:1440px;height:900px;overflow:hidden;
+    background:var(--iroko);
+    color:var(--sapwood);
+    font-family:'Archivo',system-ui,sans-serif;
+    position:relative;
+  }
+  /* carved grain: fine vertical incision running the whole beam */
+  .grain{
+    position:absolute;inset:0;pointer-events:none;
+    background-image:repeating-linear-gradient(90deg,
+      rgba(233,226,211,.055) 0 1px,
+      transparent 1px 7px);
+    mix-blend-mode:soft-light;
+  }
+  .vignette{
+    position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(130% 95% at 22% 8%, rgba(233,226,211,.09) 0%, rgba(0,0,0,0) 48%),
+               linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.45) 100%);
+  }
+  /* incised chevron banding — the one authored ornament, used only as a register divider */
+  .chevron{
+    height:9px;
+    background-image:
+      linear-gradient(135deg, var(--brass) 25%, transparent 25.5%),
+      linear-gradient(225deg, var(--brass) 25%, transparent 25.5%);
+    background-size:18px 9px;
+    background-repeat:repeat-x;
+    opacity:.62;
+  }
+  .groove{height:1px;background:linear-gradient(90deg,rgba(110,99,88,.15),rgba(110,99,88,.85) 12%,rgba(110,99,88,.85) 88%,rgba(110,99,88,.15))}
+
+  .sheet{position:relative;z-index:2;padding:0 72px}
+
+  /* ── register 00: masthead ───────────────────────── */
+  nav{display:flex;align-items:baseline;justify-content:space-between;height:86px}
+  .mark{
+    font-family:'Big Shoulders Display','Arial Narrow',sans-serif;font-weight:900;font-size:25px;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--sapwood);
+  }
+  .mark span{color:var(--brass)}
+  .nav-links{display:flex;gap:38px;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:#A79C8D;font-weight:500}
+  .nav-links b{color:var(--sapwood);font-weight:600}
+
+  /* ── register 01: the declaration ────────────────── */
+  .declare{padding:46px 0 40px;display:grid;grid-template-columns:1fr minmax(260px,316px);
+    gap:clamp(40px,5vw,72px);align-items:end}
+  h1{
+    margin:0;
+    font-family:'Big Shoulders Display','Arial Narrow',sans-serif;font-weight:700;
+    font-size:clamp(58px,7.25vw,104px);line-height:.845;letter-spacing:-.022em;
+    text-transform:uppercase;
+    text-wrap:nowrap;          /* line breaks are authored with <br>; balance fights them */
+  }
+  h1 em{font-style:normal;color:var(--brass)}
+  .standfirst{
+    margin:0;font-size:15.5px;line-height:1.62;color:#B5AB9C;max-width:42ch;
+  }
+  .standfirst strong{color:var(--sapwood);font-weight:500}
+  .seat{
+    border-top:1px solid rgba(110,99,88,.55);padding-top:18px;
+    font-family:'Martian Mono';font-size:11px;line-height:2;letter-spacing:.02em;color:var(--ash);
+    text-transform:uppercase;
+  }
+  .seat b{color:#A79C8D;font-weight:400}
+
+  /* ── registers 02–04: the ventures, fixed height ─── */
+  .registers{margin-top:8px}
+  .reg{
+    display:grid;grid-template-columns:62px 1fr 224px;align-items:center;
+    height:104px;gap:28px;
+  }
+  .reg-ord{font-family:'Martian Mono';font-size:11.5px;color:var(--ash)}
+  .reg-name{
+    font-family:'Big Shoulders Display','Arial Narrow',sans-serif;font-weight:500;font-size:43px;line-height:1;
+    text-transform:uppercase;letter-spacing:.005em;
+  }
+  .reg-note{margin-top:7px;font-size:13px;color:#9A907F;max-width:58ch;line-height:1.5}
+  /* the reserved status slot: fixed box, always drawn, empty when empty */
+  .slot{
+    height:46px;display:flex;align-items:center;gap:11px;padding:0 14px;
+    font-family:'Martian Mono';font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .slot .pip{width:7px;height:7px;flex:0 0 auto}
+  .slot--live{background:rgba(184,134,60,.13);border:1px solid rgba(184,134,60,.5);color:var(--brass)}
+  .slot--live .pip{background:var(--brass)}
+  .slot--dev{background:transparent;border:1px solid rgba(140,47,30,.62);color:#C2634D}
+  .slot--dev .pip{background:#C2634D}
+  /* aspiration: the reserved band left visibly unfilled */
+  .slot--open{border:1px dashed rgba(110,99,88,.75);color:var(--ash)}
+  .slot--open .pip{border:1px solid var(--ash)}
+  /* recency: the register the group actually moved on carries the deepest ink */
+  .reg--recent{position:relative}
+  .reg--recent::before{
+    content:"";position:absolute;left:-72px;right:-72px;top:0;bottom:0;
+    background:linear-gradient(90deg, rgba(0,0,0,.42), rgba(0,0,0,.18) 62%, rgba(0,0,0,0));
+    z-index:-1;
+  }
+  .reg--recent .reg-name{color:#F6F1E6}
+
+  /* ── base register: the action ────────────────────── */
+  .base{display:flex;align-items:center;justify-content:space-between;height:98px}
+  .plate{
+    display:inline-flex;align-items:center;gap:16px;
+    background:var(--brass);color:#160F06;
+    padding:19px 30px;
+    font-family:'Big Shoulders Display','Arial Narrow',sans-serif;font-weight:700;font-size:21px;
+    letter-spacing:.11em;text-transform:uppercase;
+    box-shadow:0 2px 0 0 #8A6227, 0 14px 26px -10px rgba(0,0,0,.75);
+  }
+  .plate i{width:30px;height:1px;background:#160F06;display:block}
+  .base-note{font-family:'Martian Mono';font-size:11px;letter-spacing:.07em;color:var(--ash);text-transform:uppercase;text-align:right;line-height:1.9}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<div class="sheet">
+  <nav>
+    <div class="mark">Ekere<span>·</span>Group</div>
+    <div class="nav-links">
+      <b>About</b><span>Ventures</span><span>Impact</span><span>News</span><span>Contact</span>
+    </div>
+  </nav>
+  <div class="groove"></div>
+
+  <section class="declare">
+    <div>
+      <h1>Building businesses.<br>Advancing progress.<br><em>Creating lasting impact.</em></h1>
+    </div>
+    <div>
+      <p class="standfirst">A corporate group built on the belief that enterprise should create long-term value <strong>without costing people their health or their livelihoods.</strong></p>
+      <div class="seat">
+        <b>Seat of operations</b><br>Port Harcourt · Rivers State<br>Federal Republic of Nigeria
+      </div>
+    </div>
+  </section>
+
+  <div class="chevron"></div>
+
+  <section class="registers">
+    <div class="reg reg--recent">
+      <div class="reg-ord">R / 01</div>
+      <div>
+        <div class="reg-name">Community Education</div>
+        <div class="reg-note">School outreach on drug abuse and the brain. Sessions in preparation with schools in Port Harcourt.</div>
+      </div>
+      <div class="slot slot--live"><span class="pip"></span>Active initiative</div>
+    </div>
+    <div class="groove"></div>
+
+    <div class="reg">
+      <div class="reg-ord">R / 02</div>
+      <div>
+        <div class="reg-name">Property &amp; Development</div>
+        <div class="reg-note">Property improvement and long-term development. Opportunities under assessment.</div>
+      </div>
+      <div class="slot slot--dev"><span class="pip"></span>In development</div>
+    </div>
+    <div class="groove"></div>
+
+    <div class="reg">
+      <div class="reg-ord">R / 03</div>
+      <div>
+        <div class="reg-name">Waste to Energy</div>
+        <div class="reg-note">A waste-management and waste-to-energy ambition for Port Harcourt. No facility exists. Seeking technical partners.</div>
+      </div>
+      <div class="slot slot--open"><span class="pip"></span>Not yet begun</div>
+    </div>
+    <div class="groove"></div>
+  </section>
+
+  <section class="base">
+    <a class="plate">Open a conversation <i></i></a>
+    <div class="base-note">Three ventures declared · one operating<br>Every status on this site states its real stage</div>
+  </section>
+</div>
+</body>
+</html>

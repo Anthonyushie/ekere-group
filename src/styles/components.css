@@ -1,0 +1,177 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   §2.6 — Component primitives.
+
+   Three things only: the brass plate, the secondary action, and the three
+   status-slot variants. Dimensions are §2.6 verbatim, which deliberately
+   overrides the §2.3 space scale for these components (19/30px padding,
+   21px plate type). Every colour reads from a §2.1 token; alphas the brief
+   expresses as "brass @ .5" are derived with color-mix so they track the
+   token rather than drifting from it.
+   ────────────────────────────────────────────────────────────────────── */
+
+/* ══ Brass plate — primary action ═══════════════════════════════════════
+   Cut metal seated into wood, not a floating card. The 2px underlip is
+   the seating; it is the whole reason this does not read as a button on a
+   surface.                                                             */
+
+.plate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-16);
+  background: var(--brass);
+  color: var(--brass-ink);
+  padding: 19px 30px;
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    0 2px 0 0 var(--brass-lip),
+    0 14px 26px -10px rgba(0, 0, 0, 0.75);
+  transition:
+    box-shadow var(--rest-duration) var(--rest-ease),
+    transform var(--rest-duration) var(--rest-ease);
+}
+
+/* Hover: shadow deepens, plate translates up 1px, underlip grows to 3px. */
+.plate:hover,
+.plate:focus-visible {
+  transform: translateY(-1px);
+  box-shadow:
+    0 3px 0 0 var(--brass-lip),
+    0 18px 32px -10px rgba(0, 0, 0, 0.75);
+}
+
+/* Active: plate sits down, underlip to 0. The 2px translate is the lip
+   the plate was standing on, so the bottom edge stays where it was. */
+.plate:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 0 0 0 var(--brass-lip),
+    0 8px 18px -10px rgba(0, 0, 0, 0.75);
+}
+
+/* The authored rule that reads as a struck line on the plate face.
+   Not an icon font, not a glyph — a 1px cut. */
+.plate-rule {
+  display: block;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 1px;
+  background: var(--brass-ink);
+}
+
+/* ══ Secondary action ═══════════════════════════════════════════════════
+   1px ash border, sapwood text, no fill.                              */
+
+.action-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-12);
+  background: transparent;
+  color: var(--sapwood);
+  border: 1px solid var(--ash);
+  border-radius: 0;
+  padding: 19px 30px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--rest-duration) var(--rest-ease),
+    color var(--rest-duration) var(--rest-ease);
+}
+
+/* Hover: border to brass, text to brass. */
+.action-secondary:hover,
+.action-secondary:focus-visible {
+  border-color: var(--brass);
+  color: var(--brass);
+}
+
+/* ══ Status slot ════════════════════════════════════════════════════════
+   Fixed 46px tall, fixed 224px wide. The box is always rendered, even
+   when the content is "Not yet begun" — that is the reserved slot doing
+   its job. The label sits at --mono-label, 11.5px: it is the most
+   important text on the page after the headline and it does not shrink.
+
+   The dashed border and hollow pip on .slot--open are the design doing
+   the honesty work. Do not improve them into something tidier.        */
+
+.slot {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: var(--slot-w);
+  height: var(--slot-h);
+  padding: 0 14px;
+  font-family: var(--font-mono);
+  font-size: var(--mono-label);
+  font-weight: var(--mono-label-weight);
+  line-height: var(--mono-label-lh);
+  letter-spacing: var(--mono-label-tracking);
+  text-transform: uppercase;
+}
+
+.slot .pip {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 7px;
+  height: 7px;
+}
+
+/* Active initiative — brass filled, solid brass pip. */
+.slot--live {
+  background: color-mix(in srgb, var(--brass) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brass) 50%, transparent);
+  color: var(--brass);
+}
+
+.slot--live .pip {
+  background: var(--brass);
+}
+
+/* In development — oxblood outlined, no fill, solid oxblood-ink pip. */
+.slot--dev {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--oxblood) 62%, transparent);
+  color: var(--oxblood-ink);
+}
+
+.slot--dev .pip {
+  background: var(--oxblood-ink);
+}
+
+/* Not yet begun — the reserved band left visibly unfilled. Dashed ash
+   border, no fill, hollow 1px ash pip. */
+.slot--open {
+  background: transparent;
+  border: 1px dashed var(--ash);
+  color: var(--ash);
+}
+
+.slot--open .pip {
+  background: transparent;
+  border: 1px solid var(--ash);
+}
+
+/* ══ Reduced motion ════════════════════════════════════════════════════
+   Render the final state immediately.                                 */
+
+@media (prefers-reduced-motion: reduce) {
+  .plate,
+  .action-secondary {
+    transition: none;
+  }
+}
