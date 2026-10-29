@@ -1,0 +1,245 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Motion.
+
+   One rule governs this entire file: **the page is finished without it.**
+
+   Nothing here hides anything on its own. The two gates are:
+
+     `[data-reveal]`  written by useReveal at mount, so its presence is
+                      proof that script is alive AND motion is wanted.
+                      No script, no attribute, nothing hidden.
+     the media query   wraps every load animation, which needs no script at
+                      all, so the hero still enters with the bundle dead.
+
+   A stylesheet that hides content and waits for script to give it back is
+   the usual cost of scroll animation, and it is not one this site can pay:
+   a partner on a bad connection seeing an empty page is the whole
+   credibility argument lost.
+
+   Everything animates `opacity` and `transform` only, so nothing here
+   triggers layout. The one exception is the statement scrub, which
+   interpolates a colour and touches no geometry at all.
+   ────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --rise: 1.5rem; /* how far an entering element travels */
+  --enter: 760ms;
+  --step: 90ms; /* stagger between siblings */
+}
+
+/* ══ Entrances ══════════════════════════════════════════════════════════
+   A revealed element starts low and clear, and lands. `data-shown` is
+   flipped once, by the observer in useReveal, and never flipped back.   */
+
+[data-reveal]:not(.stagger) {
+  opacity: 0;
+  transform: translateY(var(--rise));
+}
+
+[data-reveal]:not(.stagger)[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--enter) var(--ease),
+    transform var(--enter) var(--ease);
+}
+
+/* A staggered container stays put and moves its children instead, so a
+   grid's own layout is never animated. */
+[data-reveal].stagger > * {
+  opacity: 0;
+  transform: translateY(var(--rise));
+}
+
+[data-reveal].stagger[data-shown="true"] > * {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--enter) var(--ease),
+    transform var(--enter) var(--ease);
+}
+
+[data-reveal].stagger[data-shown="true"] > *:nth-child(2) {
+  transition-delay: var(--step);
+}
+[data-reveal].stagger[data-shown="true"] > *:nth-child(3) {
+  transition-delay: calc(var(--step) * 2);
+}
+[data-reveal].stagger[data-shown="true"] > *:nth-child(4) {
+  transition-delay: calc(var(--step) * 3);
+}
+[data-reveal].stagger[data-shown="true"] > *:nth-child(5) {
+  transition-delay: calc(var(--step) * 4);
+}
+[data-reveal].stagger[data-shown="true"] > *:nth-child(6) {
+  transition-delay: calc(var(--step) * 5);
+}
+
+/* Load animations need no script, so they are gated by preference alone
+   and still run when the bundle never arrives. */
+@media (prefers-reduced-motion: no-preference) {
+  /* ══ The hero, on load ══════════════════════════════════════════════════
+     The one entrance that is not scroll-driven: it is already on screen.  */
+
+  @keyframes ek-rise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--rise));
+    }
+  }
+
+  @keyframes ek-line {
+    from {
+      transform: translateY(105%);
+    }
+  }
+
+  @keyframes ek-bloom {
+    from {
+      opacity: 0;
+      transform: scale(1.12);
+    }
+  }
+
+  @keyframes ek-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .hero::before {
+    animation: ek-bloom 1600ms var(--ease) both;
+  }
+
+  .hero-lede {
+    animation: ek-rise 900ms var(--ease) 120ms both;
+  }
+
+  .hero-foot {
+    animation: ek-rise 900ms var(--ease) 620ms both;
+  }
+
+  .edge-label,
+  .scroll-cue {
+    animation: ek-fade 900ms var(--ease) 900ms both;
+  }
+
+  .masthead {
+    animation: ek-rise 800ms var(--ease) both;
+  }
+
+  /* The mask the headline rises out of. Only the clipping belongs in here:
+     the line boxes themselves are structural and live below, or the two
+     lines would run together whenever this query does not match. The
+     padding is what stops `overflow: hidden` cropping the descender of
+     "g" and "p". */
+  .hero-line {
+    overflow: hidden;
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+  }
+
+  .hero-line > span {
+    animation: ek-line 1100ms var(--ease) both;
+  }
+
+  .hero-line:nth-child(2) > span {
+    animation-delay: 120ms;
+  }
+}
+
+/* Structural, and therefore never gated: the headline is authored as two
+   lines and stays two lines with or without motion. */
+.hero-line,
+.hero-line > span {
+  display: block;
+}
+
+/* ══ The scrubbed statement ═════════════════════════════════════════════
+   Each word mixes between the held grey and full white on a front that
+   advances with scroll. `--progress` is only ever set by JS; its default
+   of 1 here is what makes the no-JS state the finished state.
+
+   `--t` is this word's own share of that front: 0 before it arrives, 1
+   once it has passed, and a fade across the single word in between.    */
+
+.purpose-statement .word {
+  --t: clamp(0, calc(var(--progress, 1) * var(--count) - var(--i)), 1);
+  /* White dimmed over the night ground, not a mixed colour.
+
+     `color-mix(… calc(var(--t) * 100%) …)` is the obvious way to write
+     this and it does not survive the build: Lightning CSS cannot resolve a
+     percentage containing a var, and rather than leaving the function
+     alone it folds the whole thing down to the first colour — so every
+     word compiles to plain white and the scrub silently does nothing.
+     Dimming is arithmetic it cannot fold away.
+
+     The floor is not a round number by accident: white at this alpha over
+     --night resolves to --night-held, so the unreached words land on
+     exactly the grey the token layer measured at 6.4:1. */
+  opacity: calc(0.565 + var(--t) * 0.435);
+}
+
+/* ══ The ledger ═════════════════════════════════════════════════════════
+   The reference counts its figures up from zero. Half of these figures
+   ARE zero — that is the point of the band — so a counter would sit dead
+   in two cells out of four while its neighbours span. The numerals roll
+   up out of a mask instead: the same mechanical read, and it works for a
+   zero.                                                                 */
+
+.ledger-cell dt {
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.ledger-grid[data-shown="true"] dt {
+  animation: ek-line 820ms var(--ease) both;
+}
+
+.ledger-grid[data-shown="true"] > *:nth-child(2) dt {
+  animation-delay: var(--step);
+}
+.ledger-grid[data-shown="true"] > *:nth-child(3) dt {
+  animation-delay: calc(var(--step) * 2);
+}
+.ledger-grid[data-shown="true"] > *:nth-child(4) dt {
+  animation-delay: calc(var(--step) * 3);
+}
+
+/* ══ Hover ══════════════════════════════════════════════════════════════
+   Hover refinements are not gated: they are responses to a deliberate act,
+   they never hide anything, and the reduced-motion block in base.css
+   already collapses their duration to nothing.                          */
+
+.venture .slot {
+  transition:
+    border-color var(--fast) var(--ease),
+    background-color var(--fast) var(--ease);
+}
+
+.venture:hover .slot {
+  background: var(--canvas-sunk);
+}
+
+/* The ordinal slides a hair as the card lifts, so the card reads as one
+   object moving rather than a box with static contents. */
+.venture-ord {
+  transition: transform var(--fast) var(--ease);
+}
+
+.venture:hover .venture-ord {
+  transform: translateX(2px);
+}
+
+.venture-more::after {
+  transition: transform var(--fast) var(--ease);
+}
+
+.venture:hover .venture-more::after {
+  transform: rotate(90deg);
+}
+
+.venture[aria-expanded="true"]:hover .venture-more::after {
+  transform: none;
+}

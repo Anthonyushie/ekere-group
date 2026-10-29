@@ -1,356 +1,703 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   The site surfaces. Stage 1: the home first viewport.
+   The home surfaces.
 
-   Two kinds of value live here and nothing else:
+   One band per argument, in the order a sceptical partner needs them:
 
-   1. The §3 mechanics — reserved slots, recency in ink density, the reverse
-      side. These are the direction's actual content, not decoration.
-   2. The composition metrics of the approved comp at
-      .impeccable/mocks/decision/assigned.html, which is a spatial contract.
-      They are register geometry — the fixed cuts in the beam — not §2.3
-      spacing, so they are scoped to .view-first as local properties and
-      never written onto :root, where they would read as tokens.
+     00  masthead      who, and how to reach us
+     01  hero          what the group is, and the one bloom of colour
+     02  purpose       the belief, on night ground
+     03  ventures      the three areas, each with its real stage
+     04  orb           the pause
+     05  ledger        the honest counters
+     06  method        how the group works
+     07  invitation    the ask, on night ground
+     08  footer
 
-   No colour is authored here. Every one reads from a §2.1 token, and the
-   alphas the comp expresses as "colour at alpha" are derived with color-mix
-   so they track the token rather than drifting from it, as Stage 0 does.
+   Nothing here is a template section. Every band exists because the brief
+   names an argument it has to carry.
    ────────────────────────────────────────────────────────────────────── */
 
-.view-first {
-  /* Register geometry, read off the approved comp. */
-  --masthead-h: 86px;
-  --nav-gap: 38px;
-  --declare-above: 46px;
-  --declare-below: 40px;
-  --reg-gap: 28px;
-  --base-h: 98px;
-
-  /* §3.1 — fixed, not fractional. The handover note records that this grid
-     is §3.1 rather than §2, so it is not a token. */
-  --reg-cols: 62px 1fr var(--slot-w);
-
-  /* §3.2 — the recency wash. The gradient is specimened as .layer--wash in
-     src/styles/spec.css, which site routes do not import; this is a copy of
-     it, not a reach into the token sheet. The black ramps stay literal, as
-     the §2.5 vignette's do. */
-  --wash: linear-gradient(
-    90deg,
-    var(--iroko-wash),
-    rgba(0, 0, 0, 0.18) 62%,
-    rgba(0, 0, 0, 0)
-  );
-
-  /* §3.3 — the reverse face opens in 320ms. */
-  --reverse-ms: 320ms;
-  --reverse-ease: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ══ Register 00 — the masthead ═════════════════════════════════════════ */
+/* ══ 00 — Masthead ══════════════════════════════════════════════════════
+   The wordmark sits in a solid block flush to the top-left corner of the
+   viewport, with no gutter around it: it reads as a stamp on the page
+   rather than as a logo in a header bar. The navigation floats opposite
+   it with no bar of its own, so the first viewport is the gradient and
+   the headline, not chrome.                                            */
 
 .masthead {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 40;
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
-  height: var(--masthead-h);
+  gap: var(--s-5);
+  pointer-events: none;
 }
 
-/* The brass dot in the wordmark. One of the three things brass is spent on. */
-.mark-dot {
-  color: var(--brass);
+.masthead > * {
+  pointer-events: auto;
+}
+
+/* Sits at the foot of the first viewport; the masthead compacts when it
+   leaves. Zero height, so it displaces nothing. */
+.masthead-sentinel {
+  position: absolute;
+  top: calc(100svh - 1px);
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  background: var(--night);
+  color: var(--night-ink);
+  text-decoration: none;
+  padding: 1.75rem var(--s-6);
+  border-radius: 0;
+  transition:
+    padding var(--slow) var(--ease),
+    box-shadow var(--slow) var(--ease);
+}
+
+/* Past the hero the mark contracts to its glyph and takes a hairline ring:
+   all but invisible on the canvas, and the only thing separating a black
+   block from a night band. */
+.masthead[data-compact="true"] .mark {
+  padding: var(--s-4);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.masthead[data-compact="true"] .mark-word {
+  max-width: 0;
+  opacity: 0;
+}
+
+.mark-glyph {
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  flex: none;
+}
+
+.mark-word {
+  font-family: var(--font-display);
+  font-size: var(--t-mark);
+  font-weight: var(--t-mark-weight);
+  letter-spacing: var(--t-mark-tracking);
+  text-transform: uppercase;
+  white-space: nowrap;
+  max-width: 14rem;
+  overflow: hidden;
+  transition:
+    max-width var(--slow) var(--ease),
+    opacity var(--fast) var(--ease);
 }
 
 .masthead-nav {
   display: flex;
-  gap: var(--nav-gap);
+  align-items: center;
+  gap: clamp(1rem, 2.4vw, 2.25rem);
+  padding: var(--s-5) var(--gutter) 0 0;
 }
 
 .masthead-link {
-  position: relative;
-  color: var(--bark);
+  color: var(--ink-mute);
   text-decoration: none;
-  transition: color var(--rest-duration) var(--rest-ease);
+  transition:
+    color var(--fast) var(--ease),
+    opacity var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
 }
 
+.masthead-link:hover,
 .masthead-link[aria-current="page"] {
-  color: var(--sapwood);
-  font-weight: 600;
+  color: var(--ink);
 }
 
-/* §4, resting interaction: the nav link underline grows from the left. */
-.masthead-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -6px;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--rest-duration) var(--rest-ease);
-}
-
-.masthead-link:focus-visible {
-  color: var(--sapwood);
-}
-
-.masthead-link:focus-visible::after {
-  transform: scaleX(1);
-}
-
-@media (hover: hover) {
-  .masthead-link:hover {
-    color: var(--sapwood);
-  }
-  .masthead-link:hover::after {
-    transform: scaleX(1);
-  }
-}
-
-/* ══ Register 01 — the declaration ═════════════════════════════════════ */
-
-.declare {
-  display: grid;
-  grid-template-columns: var(--declaration-cols);
-  gap: var(--declaration-gap);
-  align-items: end;
-  padding-block: var(--declare-above) var(--declare-below);
-}
-
-/* The third authored line, in brass. The em carries no italic here. */
-.declare-lift {
-  font-style: normal;
-  color: var(--brass);
-}
-
-/* The seat of operations, under a rule quieter than a register groove: a
-   groove divides registers, and this divides inside one. */
-.seat {
-  border-top: 1px solid color-mix(in srgb, var(--groove) 65%, transparent);
-  padding-top: var(--space-16);
-}
-
-/* The half of the standfirst the comp lifts out of the secondary ink. */
-.declare .t-standfirst strong {
-  color: var(--sapwood);
-  font-weight: 500;
-}
-
-/* The comp sets this label one step brighter than the address under it. It
-   uses an unnamed grey between --bark and --bark-dim; the Stage 0 hand-over
-   note says to pick a token rather than inline it, so it is --bark. */
-.seat-label {
-  color: var(--bark);
-}
-
-/* ══ Registers 02–04 — the ventures ════════════════════════════════════ */
-
-.registers {
-  margin: var(--space-8) 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* §3.1 — reserved slots. Fixed height, never min-height: a venture with
-   nothing in it shows its own empty band rather than collapsing, so absence
-   is legible instead of hidden. A register is never display: none. */
-.reg {
-  display: grid;
-  grid-template-columns: var(--reg-cols);
-  gap: var(--reg-gap);
-  align-items: center;
-  height: var(--register-h);
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  position: relative;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-/* §3.2 — recency in ink density, and the §4 resting interaction that
-   extends the same wash under the register the pointer is on. One register
-   carries it at full strength, and which one is computed from the venture
-   records, not written here. */
-.reg::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  bottom: 0;
-  /* The wash bleeds left out of the gutter entirely: at 1440 that is the
-     comp's own -72px, and above it, where the sheet stops growing, it keeps
-     running to the edge of the beam instead of stopping at the sheet and
-     leaving a seam. Overflow to the inline start is not scrollable, so this
-     cannot produce a horizontal scrollbar. */
-  left: calc(50% - 50vw);
-  right: calc(var(--gutter) * -1);
-  background: var(--wash);
+/* Past the hero the section links step aside rather than sit unreadable
+   over a night band. They repeat in full in the footer. */
+.masthead[data-compact="true"] .masthead-link {
   opacity: 0;
-  transition: opacity var(--rest-duration) var(--rest-ease);
+  pointer-events: none;
+  transform: translateY(-0.5rem);
 }
 
-.reg-group--recent .reg::before {
+/* The outlined action in the masthead is tighter than a body button. */
+.masthead .btn {
+  padding: 0.9375rem 1.75rem;
+  background: color-mix(in srgb, var(--canvas) 70%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.masthead .btn:hover {
+  background: var(--ink);
+}
+
+@media (max-width: 60rem) {
+  .mark {
+    padding: 1.125rem var(--s-5);
+  }
+
+  .masthead-nav {
+    padding-top: var(--s-4);
+    gap: var(--s-4);
+    font-size: var(--t-label);
+  }
+
+  /* On a phone the four section links would wrap into the headline, so the
+     masthead keeps only the one action. The full navigation repeats in the
+     footer, which is where a phone reader reaches it anyway. */
+  .masthead-link {
+    display: none;
+  }
+}
+
+/* ══ 01 — Hero ══════════════════════════════════════════════════════════ */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-block: clamp(9rem, 18vh, 13rem) var(--s-7);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* The bloom. The site has no photography and will not pretend otherwise,
+   so the one image is light, and it is generated. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 86%;
+  z-index: -1;
+  background: var(--bloom);
+  filter: blur(42px) saturate(1.25);
   opacity: 1;
 }
 
-.reg:focus-visible::before {
-  opacity: 0.55;
+.hero-lede {
+  color: var(--ink-mute);
+  margin-bottom: clamp(2rem, 6vh, 4.5rem);
 }
 
-@media (hover: hover) {
-  .reg:hover::before {
-    opacity: 0.55;
+.hero-title {
+  margin-bottom: clamp(2rem, 7vh, 4rem);
+}
+
+.hero-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  border-top: 1px solid var(--line);
+  padding-top: var(--s-5);
+}
+
+/* The facts row. Every item is something the group can stand behind today
+   — a place, a count of declared areas, a stage. No metric is invented. */
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4) var(--s-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-facts li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  font-family: var(--font-display);
+  font-size: var(--t-note);
+  color: var(--ink-mute);
+}
+
+.hero-facts li + li::before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  margin-right: var(--s-1);
+}
+
+.scroll-cue {
+  position: absolute;
+  left: calc(var(--gutter) / 2);
+  bottom: var(--s-7);
+  display: grid;
+  gap: var(--s-2);
+  color: var(--ink-faint);
+}
+
+.scroll-cue span {
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  animation: cue 2.4s var(--ease) infinite;
+}
+
+.scroll-cue span:nth-child(2) {
+  animation-delay: 160ms;
+  opacity: 0.5;
+}
+
+@keyframes cue {
+  0%,
+  100% {
+    transform: rotate(45deg) translate(0, 0);
+  }
+  50% {
+    transform: rotate(45deg) translate(2px, 2px);
   }
 }
 
-.reg-ord {
-  align-self: center;
+@media (max-width: 60rem) {
+  .scroll-cue {
+    display: none;
+  }
 }
 
-.reg-name {
-  display: block;
-  color: var(--sapwood);
+/* ══ 02 — Purpose, on night ground ══════════════════════════════════════ */
+
+.purpose {
+  padding-block: var(--band);
 }
 
-/* The brightest incision on the page, on the register the group last moved
-   on. §3.2 again: this class is applied from the data. */
-.reg-group--recent .reg-name {
-  color: var(--sapwood-lift);
+.purpose-grid {
+  display: grid;
+  gap: var(--s-8);
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  align-items: end;
 }
 
-.reg-note {
-  display: block;
-  margin-top: var(--space-8);
+@media (max-width: 60rem) {
+  .purpose-grid {
+    grid-template-columns: 1fr;
+    gap: var(--s-7);
+  }
 }
 
-/* The reserved status slot brightens with the register, §4. */
-.slot {
+/* The statement reads in two tones: the first clause at full strength, the
+   rest held back, so the eye lands on the commitment rather than on the
+   whole paragraph at once. */
+.purpose-statement .held {
+  color: var(--night-held);
+}
+
+.purpose-aside {
+  display: grid;
+  gap: var(--s-5);
+  justify-items: start;
+}
+
+/* ══ 03 — Ventures ══════════════════════════════════════════════════════ */
+
+.ventures {
+  padding-block: var(--band);
+}
+
+.band-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-5);
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.band-head .t-label {
+  flex: none;
+}
+
+.venture-grid {
+  display: grid;
+  gap: var(--s-5);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 64rem) {
+  .venture-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.venture {
+  position: relative;
+  min-height: 24rem;
+  justify-content: space-between;
+  padding: var(--s-6);
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
   transition:
-    background-color var(--rest-duration) var(--rest-ease),
-    border-color var(--rest-duration) var(--rest-ease),
-    color var(--rest-duration) var(--rest-ease);
+    transform var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
 }
 
-.reg:hover .slot--live,
-.reg:focus-visible .slot--live {
-  background: color-mix(in srgb, var(--brass) 18%, transparent);
-  border-color: color-mix(in srgb, var(--brass) 70%, transparent);
+.venture:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 1rem 2.5rem rgba(23, 23, 23, 0.07);
 }
 
-.reg:hover .slot--dev,
-.reg:focus-visible .slot--dev {
-  border-color: color-mix(in srgb, var(--oxblood) 85%, transparent);
+/* An open card is joined to its reverse face, so it must not lift away
+   from it. */
+.venture[aria-expanded="true"],
+.venture[aria-expanded="true"]:hover {
+  transform: none;
+  border-bottom-color: transparent;
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
-/* Brighter, still dashed and still hollow. The dashed border is the design
-   doing the honesty work, and hover does not tidy it. */
-.reg:hover .slot--open,
-.reg:focus-visible .slot--open {
-  border-color: var(--bark-dim);
-  color: var(--bark-dim);
+.venture-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-4);
 }
 
-.reg:hover .slot--open .pip,
-.reg:focus-visible .slot--open .pip {
-  border-color: var(--bark-dim);
+.venture-ord {
+  font-variant-numeric: tabular-nums;
 }
 
-/* ══ §3.3 — the reverse side ═══════════════════════════════════════════ */
+.venture-body {
+  display: grid;
+  gap: var(--s-4);
+}
 
-/* A clip reveal rather than a height jump: the row goes 0fr to 1fr, so there
-   is no measured height and nothing to recalculate when the copy changes.
-   The panel sits on --iroko-deep and bleeds to the gutter, so it reads as a
-   recess cut into the beam rather than a card laid on it. */
-.reg-reverse {
+.venture-note {
+  color: var(--ink-mute);
+  max-width: none;
+}
+
+.venture-more {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-display);
+  font-size: var(--t-label);
+  letter-spacing: var(--t-label-tracking);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.venture-more::after {
+  content: "+";
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.venture[aria-expanded="true"] .venture-more::after {
+  content: "−";
+}
+
+/* The reverse face: what is confirmed, what is not, and who is wanted.
+   A promise never travels without its fine print. */
+.venture-reverse {
   display: grid;
   grid-template-rows: 0fr;
-  background: var(--iroko-deep);
-  margin-inline: calc(var(--gutter) * -1);
-  transition: grid-template-rows var(--reverse-ms) var(--reverse-ease);
+  transition: grid-template-rows var(--slow) var(--ease);
+  background: var(--canvas-sunk);
+  border: 1px solid var(--line-soft);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
 }
 
-.reg-reverse[data-open="true"] {
+.venture-reverse[data-open="true"] {
   grid-template-rows: 1fr;
 }
 
-/* Collapsed, the panel is out of the accessibility tree as well as out of
-   sight: visibility, not opacity, and it waits for the close to finish. */
-.reg-reverse-clip {
+.venture-reverse-clip {
   overflow: hidden;
-  visibility: hidden;
-  transition: visibility 0s linear var(--reverse-ms);
 }
 
-.reg-reverse[data-open="true"] .reg-reverse-clip {
-  visibility: visible;
-  transition-delay: 0s;
-}
-
-/* The reverse face keeps the register's own columns, so the fine print lines
-   up under the thing it qualifies. */
-.reg-reverse-content {
+.venture-reverse-inner {
   display: grid;
-  grid-template-columns: var(--reg-cols);
-  gap: var(--reg-gap);
-  padding: var(--space-32) var(--gutter);
+  gap: var(--s-5);
+  padding: var(--s-6);
 }
 
-.reg-reverse-fields {
-  grid-column: 2;
-  margin: 0;
+.venture-reverse dl {
   display: grid;
-  gap: var(--space-24);
-}
-
-.reg-reverse-term {
+  gap: var(--s-5);
   margin: 0;
 }
 
-.reg-reverse-text {
-  margin: var(--space-8) 0 0;
+.venture-reverse dt {
+  margin-bottom: var(--s-2);
 }
 
-.reg-reverse-reviewed {
-  grid-column: 3;
+.venture-reverse dd {
+  margin: 0;
+  font-size: var(--t-note);
+  line-height: var(--t-note-lh);
+  color: var(--ink-mute);
 }
 
-/* A missing fact renders as an explicit placeholder, §6.5 — and it renders
-   in the brief's own lower-case form, so it reads as the instruction it is
-   rather than as apparatus. */
-.reg-reverse-date {
-  margin: var(--space-8) 0 0;
-  line-height: var(--note-lh);
-  text-transform: none;
-}
-
-/* ══ Base register — the action ════════════════════════════════════════ */
-
-.base {
+.venture-reviewed {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--base-h);
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  align-items: baseline;
+  border-top: 1px solid var(--line-soft);
+  padding-top: var(--s-4);
 }
 
-.base-note {
-  text-align: right;
+.venture-reviewed p {
+  margin: 0;
 }
 
-/* ══ Reduced motion ═══════════════════════════════════════════════════════
-   The final state, immediately. §4. */
+/* ══ 04 — The orb ═══════════════════════════════════════════════════════ */
 
-@media (prefers-reduced-motion: reduce) {
-  .masthead-link,
-  .masthead-link::after,
-  .reg::before,
-  .slot,
-  .reg-reverse,
-  .reg-reverse-clip {
-    transition: none;
+.pause {
+  padding-block: var(--band);
+  text-align: center;
+}
+
+/* The grid goes on the shell, not the section: the section's only child is
+   the shell, so a gap set here would have nothing to space. */
+.pause .shell {
+  display: grid;
+  gap: var(--s-5);
+  justify-items: center;
+}
+
+.pause .t-statement {
+  max-width: 22ch;
+}
+
+/* Narrower than the default body measure, so the paragraph sits under the
+   heading as one block rather than out-running it on both sides. */
+.pause-body {
+  max-width: 48ch;
+  margin-inline: auto;
+}
+
+/* ══ 05 — The ledger ════════════════════════════════════════════════════
+   Big numerals, as on any group site — except that every figure here is
+   one the group can defend. The last cell says so out loud, because the
+   absence of a track record is the honest thing to lead with at this
+   stage, not the thing to hide.                                        */
+
+.ledger {
+  padding-block: var(--band);
+  border-top: 1px solid var(--line);
+}
+
+.ledger-grid {
+  display: grid;
+  gap: var(--s-7) var(--s-5);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 64rem) {
+  .ledger-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+@media (max-width: 30rem) {
+  .ledger-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ledger-cell {
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+}
+
+.ledger-cell .t-counter {
+  color: var(--ink);
+}
+
+/* The label under each figure is the figure's meaning, so it carries full
+   ink rather than the faint default of .t-label. */
+.ledger-label {
+  color: var(--ink);
+}
+
+.ledger-cell p {
+  margin: 0;
+  font-size: var(--t-note);
+  line-height: var(--t-note-lh);
+  color: var(--ink-mute);
+}
+
+/* ══ 06 — Method ════════════════════════════════════════════════════════ */
+
+.method {
+  padding-block: var(--band);
+  background: var(--canvas-sunk);
+}
+
+.method-grid {
+  display: grid;
+  gap: var(--s-5);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 64rem) {
+  .method-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.method-card {
+  gap: var(--s-5);
+  min-height: 17rem;
+  justify-content: space-between;
+}
+
+.method-card .t-note {
+  max-width: none;
+}
+
+/* ══ 07 — Invitation ════════════════════════════════════════════════════ */
+
+.invitation {
+  padding-block: clamp(5rem, 12vw, 10rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.invitation::before {
+  content: "";
+  position: absolute;
+  inset: auto -15% -60% -15%;
+  height: 90%;
+  background: var(--bloom);
+  filter: blur(70px);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.invitation-grid {
+  position: relative;
+  display: grid;
+  gap: var(--s-7);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+}
+
+@media (max-width: 60rem) {
+  .invitation-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.invitation .btn--solid {
+  background: var(--night-ink);
+  border-color: var(--night-ink);
+  color: var(--night);
+}
+
+.invitation .btn--solid:hover {
+  background: transparent;
+  color: var(--night-ink);
+}
+
+.invitation-aside {
+  display: grid;
+  gap: var(--s-5);
+  justify-items: start;
+}
+
+/* ══ 08 — Footer ════════════════════════════════════════════════════════ */
+
+.footer {
+  background: var(--night-deep);
+  padding-block: var(--s-8) var(--s-6);
+}
+
+.footer-grid {
+  display: grid;
+  gap: var(--s-7);
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+  padding-bottom: var(--s-8);
+}
+
+@media (max-width: 60rem) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+  }
+}
+
+.footer-mark {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+}
+
+.footer-col {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+}
+
+.footer-col ul {
+  display: grid;
+  gap: var(--s-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-col a {
+  color: var(--night-mute);
+  text-decoration: none;
+  font-family: var(--font-display);
+  transition: color var(--fast) var(--ease);
+}
+
+.footer-col a:hover {
+  color: var(--night-ink);
+}
+
+.footer-base {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3) var(--s-5);
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid var(--line-night);
+  padding-top: var(--s-5);
+}
+
+.footer-base p {
+  margin: 0;
+}
+
+.footer-legal a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--fast) var(--ease);
+}
+
+.footer-legal a:hover {
+  color: var(--night-ink);
 }

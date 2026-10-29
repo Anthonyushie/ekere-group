@@ -5,34 +5,29 @@ import { useId, useState } from "react";
 import {
   VENTURES,
   VENTURE_STAGES,
-  mostRecentlyMovedId,
   type Venture,
 } from "@/content/ventures";
 
+import { useReveal } from "./useReveal";
+
 /* ──────────────────────────────────────────────────────────────────────────
-   The venture registers, §3.
+   The three declared areas, as cards.
 
-   Three mechanics, all of them carried by this component:
+   Two rules carry this component, and both come from the brief rather than
+   from the visual direction:
 
-   §3.1  Reserved slots. Every register is a fixed-height band with fixed
-         columns, and the 224x46 status slot is always drawn. A venture with
-         nothing in it shows its own empty band; nothing is ever collapsed
-         or hidden, so absence is legible.
-   §3.2  Recency in ink density. Exactly one register carries the wash and
-         the lifted name, and which one is computed from the `lastMovedAt`
-         field on the venture records. No register is marked by hand.
-   §3.3  The reverse side. Each register is a button that reveals its own
-         fine print: what is confirmed, what is not, what partner is being
-         sought, and when the status was last reviewed. It is a button, so
-         it is keyboard operable and a tap on mobile rather than a hover.
+   Reserved slots. Every card is the same height and always draws its status
+   slot, whatever the stage. A venture with nothing behind it shows its own
+   near-empty card; nothing is collapsed or hidden, so absence is legible.
+
+   The reverse face. Each card is a button that reveals its own fine print —
+   what is confirmed, what is not, what partner is being sought, and when the
+   status was last reviewed. It is a button rather than a hover, so it is
+   keyboard operable and works as a tap on a phone.
    ────────────────────────────────────────────────────────────────────── */
 
-/**
- * The ordinal is the register's position in the beam, so it is derived from
- * the order of the records rather than stored twice.
- */
 function ordinal(index: number): string {
-  return `R / ${String(index + 1).padStart(2, "0")}`;
+  return String(index + 1).padStart(2, "0");
 }
 
 export function VentureRegisters({
@@ -42,24 +37,24 @@ export function VentureRegisters({
 }) {
   const [opened, setOpened] = useState<Record<string, boolean>>({});
   const idPrefix = useId();
-  const recentId = mostRecentlyMovedId(ventures);
+  const revealRef = useReveal<HTMLUListElement>();
 
   return (
-    <ul className="registers" aria-label="Declared ventures">
+    <ul
+      ref={revealRef}
+      className="venture-grid stagger"
+      aria-label="Declared areas of focus"
+    >
       {ventures.map((venture, index) => {
         const stage = VENTURE_STAGES[venture.stage];
         const isOpen = opened[venture.id] === true;
         const panelId = `${idPrefix}-${venture.id}`;
-        const isRecent = venture.id === recentId;
 
         return (
-          <li
-            key={venture.id}
-            className={`reg-group${isRecent ? " reg-group--recent" : ""}`}
-          >
+          <li key={venture.id}>
             <button
               type="button"
-              className="reg"
+              className="card venture"
               aria-expanded={isOpen}
               aria-controls={panelId}
               onClick={() =>
@@ -69,63 +64,47 @@ export function VentureRegisters({
                 }))
               }
             >
-              <span className="reg-ord t-mono-label t-tabular">
-                {ordinal(index)}
+              <span className="venture-top">
+                <span className="t-label venture-ord">{ordinal(index)}</span>
+                <span className={`slot ${stage.slot}`}>
+                  <span className="pip" aria-hidden="true" />
+                  {stage.label}
+                </span>
               </span>
-              <span>
-                <span className="reg-name t-display-3">{venture.name}</span>
-                <span className="reg-note t-note">{venture.note}</span>
-              </span>
-              {/* §3.1: the reserved slot. Always drawn, whatever the stage. */}
-              <span className={`slot ${stage.slot}`}>
-                <span className="pip" aria-hidden="true" />
-                {stage.label}
+
+              <span className="venture-body">
+                <span className="t-title">{venture.name}</span>
+                <span className="t-note venture-note">{venture.note}</span>
+                <span className="venture-more">
+                  {isOpen ? "Hide the detail" : "What is confirmed"}
+                </span>
               </span>
             </button>
 
-            {/* §3.3: the reverse face. */}
-            <div className="reg-reverse" id={panelId} data-open={isOpen}>
-              <div className="reg-reverse-clip">
-                <div className="reg-reverse-content">
-                  <dl className="reg-reverse-fields">
+            <div className="venture-reverse" id={panelId} data-open={isOpen}>
+              <div className="venture-reverse-clip">
+                <div className="venture-reverse-inner">
+                  <dl>
                     <div>
-                      <dt className="reg-reverse-term t-mono-label">
-                        Confirmed
-                      </dt>
-                      <dd className="reg-reverse-text t-note">
-                        {venture.reverse.confirmed}
-                      </dd>
+                      <dt className="t-label">Confirmed</dt>
+                      <dd>{venture.reverse.confirmed}</dd>
                     </div>
                     <div>
-                      <dt className="reg-reverse-term t-mono-label">
-                        Not confirmed
-                      </dt>
-                      <dd className="reg-reverse-text t-note">
-                        {venture.reverse.notConfirmed}
-                      </dd>
+                      <dt className="t-label">Not confirmed</dt>
+                      <dd>{venture.reverse.notConfirmed}</dd>
                     </div>
                     <div>
-                      <dt className="reg-reverse-term t-mono-label">
-                        Partner sought
-                      </dt>
-                      <dd className="reg-reverse-text t-note">
-                        {venture.reverse.partnerSought}
-                      </dd>
+                      <dt className="t-label">Partner sought</dt>
+                      <dd>{venture.reverse.partnerSought}</dd>
                     </div>
                   </dl>
-                  <div className="reg-reverse-reviewed">
-                    <p className="reg-reverse-term t-mono-label">
-                      Status last reviewed
-                    </p>
-                    <p className="reg-reverse-date t-mono-label">
-                      {venture.reverse.reviewedAt}
-                    </p>
+                  <div className="venture-reviewed">
+                    <p className="t-label">Status last reviewed</p>
+                    <p className="t-label">{venture.reverse.reviewedAt}</p>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="groove" />
           </li>
         );
       })}

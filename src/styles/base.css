@@ -1,228 +1,203 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   Ground, material layers, type roles, dividers, browser surfaces.
+   Ground, type roles, shell, dividers, browser surfaces.
    Everything here reads from tokens.css. No value is restated.
    ────────────────────────────────────────────────────────────────────── */
 
-/* ══ The ground ═════════════════════════════════════════════════════════
-   The iroko ground owns 100% of every surface. There is no light mode and
-   there is no second theme, so there is no prefers-color-scheme block. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 html {
-  background: var(--iroko);
-  /* §2.7 */
-  scrollbar-color: var(--ash) var(--iroko-deep);
+  background: var(--canvas);
+  scrollbar-color: var(--ink-faint) var(--canvas-sunk);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  background: var(--iroko);
-  color: var(--sapwood);
+  background: var(--canvas);
+  color: var(--ink);
   font-family: var(--font-text);
-  font-size: var(--body);
-  font-weight: var(--body-weight);
-  line-height: var(--body-lh);
+  font-size: var(--t-body);
+  line-height: var(--t-body-lh);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
-/* ══ §2.5 Material layers ═══════════════════════════════════════════════
-   Two layers over the ground, both pointer-events: none. Fixed to the
-   viewport so the beam reads as one continuous piece of wood rather than
-   a texture that scrolls out from under the type.                      */
-
-.material {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+/* The site is light-only and says so, so the browser chrome and form
+   controls match the canvas instead of fighting it. */
+:root {
+  color-scheme: light;
 }
 
-.material::before,
-.material::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+img,
+svg {
+  display: block;
+  max-width: 100%;
 }
 
-/* Grain — the incision running the length of the beam. */
-.material::before {
-  background-image: var(--grain);
-  mix-blend-mode: var(--grain-blend);
-}
+/* ══ The shell ══════════════════════════════════════════════════════════
+   One content width, one gutter. Bands bleed; their contents do not.   */
 
-/* Vignette — light falling on carved wood from upper left. */
-.material::after {
-  background: var(--vignette);
-}
-
-/* Everything that is not material sits above it.
-
-   §2.3's 1296px is the width of the content, not of the box the gutter is
-   cut out of: at 1440 the approved comp runs its content from 72 to 1368,
-   which is 1296 between two 72px gutters. Capping the outer box instead
-   starves the declaration's right column to its 260px floor and pushes the
-   headline past the track it is given — the failure §2.3 names. */
-.sheet {
-  position: relative;
-  z-index: 1;
-  max-width: calc(var(--content-max) + var(--gutter) * 2);
+.shell {
+  width: 100%;
+  max-width: var(--shell);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
 
-/* ══ §2.5 Dividers and the one ornament ═════════════════════════════════ */
+/* ══ Type roles ═════════════════════════════════════════════════════════
+   Every display role is Space Grotesk at its one weight. The scale lives
+   in tokens.css; these roles only bind it.                              */
 
-/* The only divider. 1px, fading at both ends. */
-.groove {
-  height: var(--groove-h);
-  background: var(--groove-line);
-}
-
-/* Used only between major registers, never more than three times on a page. */
-.chevron {
-  height: var(--chevron-h);
-  background-image: var(--chevron-cut);
-  background-size: var(--chevron-w) var(--chevron-h);
-  background-repeat: repeat-x;
-  opacity: var(--chevron-opacity);
-}
-
-/* ══ §2.2 Type roles ════════════════════════════════════════════════════
-   One class per row of the §2.2 ramp. Downstream sets a role, never a
-   size. Headings whose breaks are authored with <br> get text-wrap:
-   nowrap, not balance — balance re-distributes across the authored breaks
-   and silently adds a fourth line. Headings that wrap naturally get
-   balance, via .t-balance.                                             */
-
-.t-display-1,
-.t-display-2,
-.t-display-3,
-.t-mark {
+.t-hero,
+.t-statement,
+.t-head,
+.t-title,
+.t-counter {
   font-family: var(--font-display);
-  text-transform: uppercase;
+  font-weight: var(--t-hero-weight);
   margin: 0;
+  text-wrap: balance;
 }
 
-.t-display-1 {
-  font-size: var(--display-1);
-  font-weight: var(--display-1-weight);
-  line-height: var(--display-1-lh);
-  letter-spacing: var(--display-1-tracking);
+.t-hero {
+  font-size: var(--t-hero);
+  line-height: var(--t-hero-lh);
+  letter-spacing: var(--t-hero-tracking);
+  text-wrap: pretty;
 }
 
-.t-display-2 {
-  font-size: var(--display-2);
-  font-weight: var(--display-2-weight);
-  line-height: var(--display-2-lh);
-  letter-spacing: var(--display-2-tracking);
+.t-statement {
+  font-size: var(--t-statement);
+  line-height: var(--t-statement-lh);
+  letter-spacing: var(--t-statement-tracking);
 }
 
-.t-display-3 {
-  font-size: var(--display-3);
-  font-weight: var(--display-3-weight);
-  line-height: var(--display-3-lh);
-  letter-spacing: var(--display-3-tracking);
+.t-head {
+  font-size: var(--t-head);
+  line-height: var(--t-head-lh);
+  letter-spacing: var(--t-head-tracking);
 }
 
-.t-mark {
-  font-size: var(--mark);
-  font-weight: var(--mark-weight);
-  line-height: var(--mark-lh);
-  letter-spacing: var(--mark-tracking);
+.t-title {
+  font-size: var(--t-title);
+  line-height: var(--t-title-lh);
+  letter-spacing: var(--t-title-tracking);
 }
 
-.t-standfirst {
-  font-family: var(--font-text);
-  font-size: var(--standfirst);
-  font-weight: var(--standfirst-weight);
-  line-height: var(--standfirst-lh);
-  max-width: var(--standfirst-measure);
-  color: var(--bark);
+.t-counter {
+  font-size: var(--t-counter);
+  line-height: var(--t-counter-lh);
+  letter-spacing: var(--t-counter-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Prose roles — Archivo. */
+
+.t-lede {
+  font-size: var(--t-lede);
+  line-height: var(--t-lede-lh);
+  max-width: var(--measure-lede);
   margin: 0;
 }
 
 .t-body {
-  font-family: var(--font-text);
-  font-size: var(--body);
-  font-weight: var(--body-weight);
-  line-height: var(--body-lh);
-  max-width: var(--body-measure);
+  font-size: var(--t-body);
+  line-height: var(--t-body-lh);
+  max-width: var(--measure-body);
   margin: 0;
 }
 
 .t-note {
-  font-family: var(--font-text);
-  font-size: var(--note);
-  font-weight: var(--note-weight);
-  line-height: var(--note-lh);
-  max-width: var(--note-measure);
-  color: var(--bark-dim);
+  font-size: var(--t-note);
+  line-height: var(--t-note-lh);
+  max-width: var(--measure-note);
   margin: 0;
+  color: var(--ink-mute);
+}
+
+/* Apparatus — Space Grotesk, uppercase, letterspaced. Never below the
+   0.75rem floor, including the status labels, which are the most important
+   small text on the site. */
+
+.t-label {
+  font-family: var(--font-display);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--t-label-tracking);
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--ink-faint);
 }
 
 .t-nav {
-  font-family: var(--font-text);
-  font-size: var(--nav);
-  font-weight: var(--nav-weight);
-  line-height: var(--nav-lh);
-  letter-spacing: var(--nav-tracking);
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: var(--t-nav);
+  font-weight: 400;
+  line-height: 1;
 }
 
-.t-mono-label {
-  font-family: var(--font-mono);
-  font-size: var(--mono-label);
-  font-weight: var(--mono-label-weight);
-  line-height: var(--mono-label-lh);
-  letter-spacing: var(--mono-label-tracking);
-  text-transform: uppercase;
-  color: var(--ash);
+/* ══ Night bands ════════════════════════════════════════════════════════
+   A full-bleed dark section inverts every ink token inside it, so nothing
+   downstream has to know which ground it is sitting on.                 */
+
+.night {
+  background: var(--night);
+  color: var(--night-ink);
+
+  --ink: var(--night-ink);
+  --ink-mute: var(--night-mute);
+  --ink-faint: var(--night-mute);
+  --line: var(--line-night);
+  --line-soft: rgba(255, 255, 255, 0.07);
+  --paper: #1f1f1f;
 }
 
-.t-mono-meta {
-  font-family: var(--font-mono);
-  font-size: var(--mono-meta);
-  font-weight: var(--mono-meta-weight);
-  line-height: var(--mono-meta-lh);
-  letter-spacing: var(--mono-meta-tracking);
-  text-transform: uppercase;
-  color: var(--ash);
+/* ══ Rules ══════════════════════════════════════════════════════════════ */
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 0;
 }
 
-/* Line breaking, §2.2. Authored <br> breaks get nowrap; natural wraps get
-   balance. At balance, "Creating lasting impact." split in two and pushed
-   the base register 163px below the fold. */
-.t-nowrap {
-  text-wrap: nowrap;
-}
-.t-balance {
-  text-wrap: balance;
-}
+/* ══ Focus ══════════════════════════════════════════════════════════════
+   One visible focus ring everywhere, on both grounds. Government and
+   institutional visitors will arrive on a keyboard; this is not optional. */
 
-/* Body copy gets tabular figures wherever a figure appears. */
-.t-tabular {
-  font-variant-numeric: tabular-nums;
-}
-
-/* ══ §2.7 Browser surfaces ══════════════════════════════════════════════
-   The cheapest signal that a page was built rather than assembled.    */
-
-::selection {
-  background: var(--brass);
-  color: var(--brass-ink);
-}
-
-:focus-visible {
-  outline: 2px solid var(--brass);
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: var(--stroke) solid currentColor;
   outline-offset: 3px;
+  border-radius: var(--radius);
 }
 
-input,
-textarea {
-  caret-color: var(--brass);
+/* ══ Reduced motion ═════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-a {
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
+/* ══ Accessible-only text ═══════════════════════════════════════════════ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }

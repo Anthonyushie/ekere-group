@@ -88,4 +88,34 @@ public/fonts/              Four woff2 subsets + OFL licence and provenance
 - **WCAG 2.1 AA, measured.** Every ink is measured against the darkest ground
   it is ever set on — the sunk `#e4e4e4` band, not the canvas. The measured
   ratios are recorded in `tokens.css`; do not lighten any of the mutes.
+- **No stylesheet may hide content that script has to give back.** See below.
+
+## Motion
+
+`src/styles/motion.css` holds every animation. The entrances are scroll-driven
+and the manifesto is scrubbed word by word as it travels the viewport, both
+after the reference. One rule governs the whole layer: **the page is finished
+without it.** Two gates enforce that, and nothing animates outside them:
+
+| Gate | Covers | If it never fires |
+|---|---|---|
+| `[data-reveal]`, written by `useReveal` at mount | scroll entrances | no attribute, so nothing was ever hidden |
+| `@media (prefers-reduced-motion: no-preference)` | the hero's load animations | they need no script, so they still run |
+
+The attributes that hide a pending element are written by script, so their
+presence *is* the proof that script is alive and motion is wanted. The server
+HTML therefore contains no hidden elements at all — if the bundle never
+arrives, the reader gets a complete page rather than a blank one. The same
+holds for the scrub: `--progress` defaults to `1` in CSS, so an un-scrubbed
+statement is a fully lit statement.
+
+Two traps worth knowing before editing this file:
+
+- **Do not interpolate a colour with `color-mix(… calc(var(--x) * 100%) …)`.**
+  Lightning CSS cannot resolve a percentage containing a var and folds the
+  whole function down to its first colour, so the effect compiles away to a
+  flat colour and fails silently. The scrub dims opacity instead.
+- **`.hero-line` sets `display: block` outside the media query on purpose.**
+  Inside it, the headline collapses to one line whenever the query does not
+  match.
 # ekere-group

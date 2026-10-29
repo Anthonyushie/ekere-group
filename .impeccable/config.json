@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "space grotesk",
+        "createdAt": "2026-10-29T21:10:39.400Z",
+        "reason": "User asked for the site to match satoshilabs.com exactly; that site's display face is PP Neue Machina (commercial) and Space Grotesk is its closest OFL stand-in. Chosen to hit a named visual target, not as a default."
+      }
+    ]
+  }
+}

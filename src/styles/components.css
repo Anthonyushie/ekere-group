@@ -1,177 +1,289 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   §2.6 — Component primitives.
-
-   Three things only: the brass plate, the secondary action, and the three
-   status-slot variants. Dimensions are §2.6 verbatim, which deliberately
-   overrides the §2.3 space scale for these components (19/30px padding,
-   21px plate type). Every colour reads from a §2.1 token; alphas the brief
-   expresses as "brass @ .5" are derived with color-mix so they track the
-   token rather than drifting from it.
+   Components. Reusable pieces only: anything that appears on one surface
+   and one surface alone lives in site.css instead.
    ────────────────────────────────────────────────────────────────────── */
 
-/* ══ Brass plate — primary action ═══════════════════════════════════════
-   Cut metal seated into wood, not a floating card. The 2px underlip is
-   the seating; it is the whole reason this does not read as a button on a
-   surface.                                                             */
+/* ══ Buttons ════════════════════════════════════════════════════════════
+   Two kinds, both effectively square. The outline sits on light grounds,
+   the solid closes a section. Padding is generous because they are the
+   only two moments of weight in the whole interface.                    */
 
-.plate {
+.btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-16);
-  background: var(--brass);
-  color: var(--brass-ink);
-  padding: 19px 30px;
-  border: 0;
-  border-radius: 0;
+  gap: var(--s-3);
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 21px;
+  font-size: var(--t-nav);
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
+  padding: 1.125rem 2.25rem;
+  border-radius: var(--radius);
   text-decoration: none;
   cursor: pointer;
-  box-shadow:
-    0 2px 0 0 var(--brass-lip),
-    0 14px 26px -10px rgba(0, 0, 0, 0.75);
   transition:
-    box-shadow var(--rest-duration) var(--rest-ease),
-    transform var(--rest-duration) var(--rest-ease);
+    background-color var(--fast) var(--ease),
+    color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
 }
 
-/* Hover: shadow deepens, plate translates up 1px, underlip grows to 3px. */
-.plate:hover,
-.plate:focus-visible {
-  transform: translateY(-1px);
-  box-shadow:
-    0 3px 0 0 var(--brass-lip),
-    0 18px 32px -10px rgba(0, 0, 0, 0.75);
-}
-
-/* Active: plate sits down, underlip to 0. The 2px translate is the lip
-   the plate was standing on, so the bottom edge stays where it was. */
-.plate:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 0 0 0 var(--brass-lip),
-    0 8px 18px -10px rgba(0, 0, 0, 0.75);
-}
-
-/* The authored rule that reads as a struck line on the plate face.
-   Not an icon font, not a glyph — a 1px cut. */
-.plate-rule {
-  display: block;
-  flex: 0 0 auto;
-  width: 30px;
-  height: 1px;
-  background: var(--brass-ink);
-}
-
-/* ══ Secondary action ═══════════════════════════════════════════════════
-   1px ash border, sapwood text, no fill.                              */
-
-.action-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-12);
+.btn--outline {
+  border: var(--stroke) solid var(--ink);
   background: transparent;
-  color: var(--sapwood);
-  border: 1px solid var(--ash);
-  border-radius: 0;
-  padding: 19px 30px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 21px;
-  line-height: 1;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    border-color var(--rest-duration) var(--rest-ease),
-    color var(--rest-duration) var(--rest-ease);
+  color: var(--ink);
 }
 
-/* Hover: border to brass, text to brass. */
-.action-secondary:hover,
-.action-secondary:focus-visible {
-  border-color: var(--brass);
-  color: var(--brass);
+.btn--outline:hover {
+  background: var(--ink);
+  color: var(--canvas);
+}
+
+.btn--solid {
+  border: var(--stroke) solid var(--ink);
+  background: var(--ink);
+  color: var(--canvas);
+}
+
+.btn--solid:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+/* A text link that behaves like a button: label, then a rule that extends
+   on hover. Used where a full button would be too much weight. */
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-display);
+  font-size: var(--t-nav);
+  color: var(--ink);
+  text-decoration: none;
+  padding-block: var(--s-2);
+}
+
+.link-arrow::after {
+  content: "";
+  width: 1.75rem;
+  height: var(--stroke);
+  background: currentColor;
+  transition: width var(--fast) var(--ease);
+}
+
+.link-arrow:hover::after {
+  width: 3rem;
+}
+
+/* ══ Vertical edge labels ═══════════════════════════════════════════════
+   The rotated marginalia that runs down the left and right edges of the
+   first viewport. Decorative in placement, real text in substance, so it
+   stays in the accessibility tree and is readable when rotation is
+   unavailable.                                                           */
+
+.edge-label {
+  position: absolute;
+  top: 50%;
+  font-family: var(--font-display);
+  font-size: var(--t-label);
+  letter-spacing: var(--t-label-tracking);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.edge-label--left {
+  left: calc(var(--gutter) / 2);
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+}
+
+.edge-label--right {
+  right: calc(var(--gutter) / 2);
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+}
+
+@media (max-width: 60rem) {
+  .edge-label {
+    display: none;
+  }
 }
 
 /* ══ Status slot ════════════════════════════════════════════════════════
-   Fixed 46px tall, fixed 224px wide. The box is always rendered, even
-   when the content is "Not yet begun" — that is the reserved slot doing
-   its job. The label sits at --mono-label, 11.5px: it is the most
-   important text on the page after the headline and it does not shrink.
-
-   The dashed border and hollow pip on .slot--open are the design doing
-   the honesty work. Do not improve them into something tidier.        */
+   Stage honesty is the brand, so every venture carries its real stage in a
+   reserved slot that is always drawn. The stage is told by a pip AND a
+   word — never by colour alone, which would fail for a colour-blind
+   reader and for anyone printing the page.                              */
 
 .slot {
-  box-sizing: border-box;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 11px;
-  width: var(--slot-w);
-  height: var(--slot-h);
-  padding: 0 14px;
-  font-family: var(--font-mono);
-  font-size: var(--mono-label);
-  font-weight: var(--mono-label-weight);
-  line-height: var(--mono-label-lh);
-  letter-spacing: var(--mono-label-tracking);
+  gap: var(--s-2);
+  font-family: var(--font-display);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--t-label-tracking);
   text-transform: uppercase;
+  line-height: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  white-space: nowrap;
 }
 
-.slot .pip {
-  flex: 0 0 auto;
-  box-sizing: border-box;
-  width: 7px;
-  height: 7px;
+.pip {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  flex: none;
 }
 
-/* Active initiative — brass filled, solid brass pip. */
 .slot--live {
-  background: color-mix(in srgb, var(--brass) 13%, transparent);
-  border: 1px solid color-mix(in srgb, var(--brass) 50%, transparent);
-  color: var(--brass);
+  color: var(--stage-live);
+  border-color: color-mix(in srgb, var(--stage-live) 40%, transparent);
 }
-
 .slot--live .pip {
-  background: var(--brass);
+  background: var(--stage-live);
 }
 
-/* In development — oxblood outlined, no fill, solid oxblood-ink pip. */
 .slot--dev {
-  background: transparent;
-  border: 1px solid color-mix(in srgb, var(--oxblood) 62%, transparent);
-  color: var(--oxblood-ink);
+  color: var(--stage-dev);
+  border-color: color-mix(in srgb, var(--stage-dev) 40%, transparent);
 }
-
 .slot--dev .pip {
-  background: var(--oxblood-ink);
+  background: var(--stage-dev);
+  /* A ring rather than a disc, so the three stages differ in shape too. */
+  box-shadow: inset 0 0 0 1.5px var(--paper);
 }
 
-/* Not yet begun — the reserved band left visibly unfilled. Dashed ash
-   border, no fill, hollow 1px ash pip. */
 .slot--open {
-  background: transparent;
-  border: 1px dashed var(--ash);
-  color: var(--ash);
+  color: var(--stage-open);
+  border-color: var(--line);
 }
-
 .slot--open .pip {
   background: transparent;
-  border: 1px solid var(--ash);
+  box-shadow: inset 0 0 0 1.5px currentColor;
 }
 
-/* ══ Reduced motion ════════════════════════════════════════════════════
-   Render the final state immediately.                                 */
+/* ══ Card ═══════════════════════════════════════════════════════════════ */
 
-@media (prefers-reduced-motion: reduce) {
-  .plate,
-  .action-secondary {
-    transition: none;
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+/* ══ The orb ════════════════════════════════════════════════════════════
+   The one piece of imagery on the site, and it is generated. Concentric
+   conic sweeps of the iridescent palette, blurred into each other and
+   masked to a ring. It costs no network bytes, which matters more here
+   than it would elsewhere.                                              */
+
+.orb {
+  position: relative;
+  width: min(34rem, 72vw);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.orb::before,
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.orb::before {
+  background: conic-gradient(
+    from 210deg,
+    var(--iris-1),
+    var(--iris-5),
+    var(--iris-2),
+    var(--iris-3),
+    var(--iris-4),
+    var(--iris-1)
+  );
+  mask: radial-gradient(
+    closest-side,
+    transparent 52%,
+    #000 60%,
+    #000 92%,
+    transparent 100%
+  );
+  filter: blur(6px) saturate(1.15);
+  animation: orb-turn 42s linear infinite;
+}
+
+.orb::after {
+  inset: 14%;
+  background: conic-gradient(
+    from 40deg,
+    var(--iris-3),
+    var(--iris-4),
+    var(--iris-1),
+    var(--iris-5),
+    var(--iris-2),
+    var(--iris-3)
+  );
+  mask: radial-gradient(
+    closest-side,
+    transparent 44%,
+    #000 56%,
+    #000 88%,
+    transparent 100%
+  );
+  filter: blur(10px) saturate(1.2);
+  animation: orb-turn 64s linear infinite reverse;
+}
+
+@keyframes orb-turn {
+  to {
+    transform: rotate(1turn);
   }
+}
+
+/* The orb is the one thing on the page that animates forever, and it does
+   it by rotating two blurred layers. On a phone that is a re-raster every
+   frame for as long as it is on screen, which is exactly the budget this
+   site cannot spend. Below the breakpoint it holds still — a conic
+   gradient is no worse for being stationary. */
+@media (max-width: 48rem) {
+  .orb::before,
+  .orb::after {
+    animation: none;
+  }
+}
+
+/* The rings the orb sits inside — faint ellipses, drawn in CSS. */
+
+.orb-field {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding-block: var(--s-8);
+}
+
+.orb-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      closest-side,
+      transparent 68%,
+      var(--line-soft) 69%,
+      transparent 70%
+    ),
+    radial-gradient(
+      closest-side,
+      transparent 84%,
+      var(--line-soft) 85%,
+      transparent 86%
+    );
+  pointer-events: none;
 }

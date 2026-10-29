@@ -1,220 +1,176 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   §2 — Tokens. Authored once. Nothing downstream may hardcode a hex value.
+   Tokens. Authored once. Nothing downstream may hardcode a hex value.
 
-   Names are taken verbatim from BUILD-BRIEF.md §2.1 and §2.4. Where §2.2,
-   §2.3 and §2.5 give a value but no name, the name is the brief's own role
-   label for it. No token here is absent from §2.
+   The direction is a light, near-monochrome editorial grotesque: a warm-grey
+   canvas, near-black ink, full-bleed night sections for the statements that
+   carry weight, and one iridescent gradient that does all the work that
+   photography would otherwise do. The group has no usable photography, so
+   the gradient is not decoration — it is the only image on the site, and it
+   is generated rather than fetched, which costs nothing on a slow network.
    ────────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* ══ §2.1 Colour ══════════════════════════════════════════════════════
-     Committed strategy: the iroko ground owns 100% of every surface.
-     There is no light mode and there is no second theme. Brass is the only
-     thing that glows and it is rationed.
+  /* ══ Colour ═══════════════════════════════════════════════════════════
+     Near-monochrome by design. WCAG 2.1 AA is the target — government
+     bodies and institutional partners will open this site — so every ink
+     is measured against the darkest ground it is ever set on, not against
+     the lightest. The sunk ground is the binding constraint on the light
+     side, which is why the mutes are darker than they look like they need
+     to be. Measured:
 
-     Contrast, verified by measurement — do not darken any of these. The
-     first version of the comp used #6E6358 for ash and failed at 3.26:1;
-     that is the trap on a ground this dark.                            */
+       ink on canvas          #171717 on #eeeeee   15.8:1
+       ink-mute on canvas     #565656 on #eeeeee    6.3:1
+       ink-mute on sunk       #565656 on #e4e4e4    5.8:1
+       ink-faint on canvas    #666666 on #eeeeee    5.0:1
+       ink-faint on sunk      #666666 on #e4e4e4    4.5:1   ← the binding one
+       night-ink on night     #ffffff on #171717   17.9:1
+       night-mute on night    #8c8c8c on #171717    5.3:1
+       night-held on night    #9a9a9a on #171717    6.4:1
+
+     Do not lighten any of these.                                         */
 
   /* ground */
-  --iroko: #15100c; /* page ground, everywhere */
-  --iroko-deep: #0d0a07; /* recessed panels, the reverse face */
-  --iroko-wash: rgba(0, 0, 0, 0.42); /* recency wash, left-bleeding */
+  --canvas: #eeeeee; /* page ground */
+  --paper: #ffffff; /* cards, raised surfaces */
+  --canvas-sunk: #e4e4e4; /* recessed bands */
+  --night: #171717; /* full-bleed dark sections */
+  --night-deep: #0e0e0e; /* the footer, the deepest surface */
 
-  /* ink */
-  --sapwood: #e9e2d3; /* primary text, display type */
-  --sapwood-lift: #f6f1e6; /* the one recent register name */
-  --bark: #b5ab9c; /* standfirst, secondary prose */
-  --bark-dim: #9a907f; /* register notes */
-  --ash: #8f8475; /* mono apparatus, labels, meta */
+  /* ink on light */
+  --ink: #171717;
+  --ink-mute: #565656; /* secondary prose, nav links */
+  --ink-faint: #666666; /* meta, ordinals, captions */
 
-  /* signal */
-  --brass: #b8863c; /* live status, primary action, accents */
-  --brass-lip: #8a6227; /* the 2px underlip on brass plates */
-  --brass-ink: #160f06; /* text ON brass */
-  --oxblood: #8c2f1e; /* "in development" borders */
-  --oxblood-ink: #c2634d; /* "in development" text */
+  /* ink on night */
+  --night-ink: #ffffff;
+  --night-mute: #8c8c8c; /* secondary prose on night */
+  /* The held-back clause of a night statement. It is held back in weight,
+     not in legibility: it carries most of the sentence, so it clears AA
+     comfortably rather than sitting at the large-text floor. */
+  --night-held: #9a9a9a;
 
   /* rules */
-  --groove: rgba(110, 99, 88, 0.85);
-  --groove-fade: rgba(110, 99, 88, 0.15);
+  --line: rgba(23, 23, 23, 0.14);
+  --line-soft: rgba(23, 23, 23, 0.07);
+  --line-night: rgba(255, 255, 255, 0.14);
 
-  /* ══ §2.2 Type ════════════════════════════════════════════════════════
-     Three faces, all OFL, all self-hosted. Every display declaration
-     carries the condensed fallback: with a default serif fallback the home
-     h1 measures 1417px against an 876px box and the pre-load frame reflows
-     from seven lines to three. A condensed fallback keeps it invisible. */
+  /* status — the one place colour is permitted, and it is rationed.
+     Stage honesty is the brand, so the three stages are told apart by a
+     pip and a label, never by colour alone.                              */
+  --stage-live: #1f7a4d;
+  --stage-dev: #8a6a16;
+  --stage-open: #6b6b6b;
 
-  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
-  --font-text: "Archivo", system-ui, sans-serif;
-  --font-mono: "Martian Mono", ui-monospace, monospace;
+  /* ══ The iridescence ══════════════════════════════════════════════════
+     One soft spectral wash: peach → mint → sky → lavender, all at low
+     saturation so it reads as light on a surface rather than as colour.
+     Used as a hero bloom, as the orb, and nowhere else.                   */
+  --iris-1: #ffd9e0; /* peach-pink */
+  --iris-2: #d9f2e4; /* mint */
+  --iris-3: #d6e8ff; /* sky */
+  --iris-4: #e6dcff; /* lavender */
+  --iris-5: #fff3d6; /* warm highlight */
 
-  /* display-1 — home h1.  104px / .845 / -.022em  BSD 700 uppercase */
-  --display-1-weight: 700;
-  --display-1-lh: 0.845;
-  --display-1-tracking: -0.022em;
-
-  /* display-2 — section heads.  64px / .94 / -.018em  BSD 700 uppercase */
-  --display-2-weight: 700;
-  --display-2-lh: 0.94;
-  --display-2-tracking: -0.018em;
-
-  /* display-3 — register names.  43px / 1 / .005em  BSD 500 uppercase */
-  --display-3-weight: 500;
-  --display-3-lh: 1;
-  --display-3-tracking: 0.005em;
-
-  /* mark — the wordmark.  25px / 1 / .22em  BSD 900 uppercase */
-  --mark: 25px;
-  --mark-weight: 900;
-  --mark-lh: 1;
-  --mark-tracking: 0.22em;
-
-  /* standfirst.  15.5px / 1.62  Archivo 400, 42ch max */
-  --standfirst: 15.5px;
-  --standfirst-weight: 400;
-  --standfirst-lh: 1.62;
-  --standfirst-measure: 42ch;
-
-  /* body.  16px / 1.65  Archivo 400, 68ch max */
-  --body: 16px;
-  --body-weight: 400;
-  --body-lh: 1.65;
-  --body-measure: 68ch;
-
-  /* note.  13px / 1.5  Archivo 400, 58ch max */
-  --note: 13px;
-  --note-weight: 400;
-  --note-lh: 1.5;
-  --note-measure: 58ch;
-
-  /* nav.  12.5px / 1 / .16em  Archivo 500 uppercase */
-  --nav: 12.5px;
-  --nav-weight: 500;
-  --nav-lh: 1;
-  --nav-tracking: 0.16em;
-
-  /* mono-label.  11.5px / 1 / .08em  Martian Mono 400 uppercase */
-  --mono-label: 11.5px;
-  --mono-label-weight: 400;
-  --mono-label-lh: 1;
-  --mono-label-tracking: 0.08em;
-
-  /* mono-meta.  11px / 2 / .02em  Martian Mono 400 uppercase */
-  --mono-meta: 11px;
-  --mono-meta-weight: 400;
-  --mono-meta-lh: 2;
-  --mono-meta-tracking: 0.02em;
-
-  /* The 11px floor. No functional text goes below this — not labels, not
-     ordinals, not meta rows, not a letterspaced micro-label that looks
-     decorative. The status slot label is the most important text on the
-     page after the headline. Only non-interactive legal smallprint may
-     sit at --smallprint, and nothing interactive ever may.             */
-  --text-floor: 11px;
-  --smallprint: 10px;
-
-  /* Tracking floor. Nothing is set tighter than this. */
-  --tracking-floor: -0.04em;
-
-  /* ══ §2.3 Space and grid ══════════════════════════════════════════════
-     4px base. Only these steps.                                        */
-
-  --space-4: 4px;
-  --space-8: 8px;
-  --space-12: 12px;
-  --space-16: 16px;
-  --space-24: 24px;
-  --space-32: 32px;
-  --space-48: 48px;
-  --space-64: 64px;
-  --space-72: 72px;
-  --space-96: 96px;
-  --space-128: 128px;
-  --space-160: 160px;
-
-  --content-max: 1296px;
-  --col-gap: 24px; /* 12 columns, 24px column gap */
-
-  /* More space above a heading than below it — always. */
-  --section-head-above: var(--space-128);
-  --section-head-below: var(--space-48);
-
-  /* The declaration register. A fixed 316px right column starves the
-     headline below 1360px and the display type overflows, so the right
-     track is a minmax and the gap is fluid.                            */
-  --declaration-cols: 1fr minmax(260px, 316px);
-  --declaration-gap: clamp(40px, 5vw, 72px);
-
-  /* Register height is fixed, not min-height. This is load-bearing: a
-     venture with nothing in it shows its own empty band rather than
-     collapsing, so absence is legible instead of hidden.               */
-  --register-h: 104px;
-  --register-h-mobile: 92px;
-
-  /* The reserved status slot. Always rendered, even when the content is
-     "Not yet begun".                                                   */
-  --slot-w: 224px;
-  --slot-h: 46px;
-
-  /* ══ §2.4 Fluidity ════════════════════════════════════════════════════
-     No fixed-pixel grid that wraps a hundred pixels narrower. The first
-     viewport must still hold at 1280 and 1600, not only at 1440. The
-     display-1 ceiling also keeps display type under 6rem on mobile.    */
-
-  --display-1: clamp(58px, 7.25vw, 104px);
-  --display-2: clamp(34px, 4.6vw, 64px);
-  --display-3: clamp(27px, 3.1vw, 43px);
-  --gutter: clamp(24px, 5vw, 72px); /* 72 desktop · 40 tablet · 24 mobile */
-
-  /* ══ §2.5 Material ════════════════════════════════════════════════════
-     Two layers over the ground, both pointer-events: none. Alpha values
-     the brief expresses as "colour at alpha" are derived from the §2.1
-     tokens so they cannot drift; plain black ramps stay literal.       */
-
-  /* Grain — the incision running the length of the beam. */
-  --grain-ink: color-mix(in srgb, var(--sapwood) 5.5%, transparent);
-  --grain-line: 1px;
-  --grain-pitch: 7px;
-  --grain-blend: soft-light;
-  --grain: repeating-linear-gradient(
-    90deg,
-    var(--grain-ink) 0 var(--grain-line),
-    transparent var(--grain-line) var(--grain-pitch)
-  );
-
-  /* Vignette — light falling on carved wood from upper left. */
-  --vignette-light: color-mix(in srgb, var(--sapwood) 9%, transparent);
-  --vignette:
-    radial-gradient(
-      130% 95% at 22% 8%,
-      var(--vignette-light) 0%,
-      rgba(0, 0, 0, 0) 48%
+  /* Five overlapping washes rather than one, so the spectrum shifts across
+     the width instead of pooling in a corner: lavender and pink hold the
+     right, warm highlight the centre, mint and sky the left. */
+  --bloom: radial-gradient(
+      70% 90% at 84% 10%,
+      var(--iris-1) 0%,
+      transparent 68%
     ),
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.45) 100%);
+    radial-gradient(60% 80% at 100% 40%, var(--iris-4) 0%, transparent 72%),
+    radial-gradient(64% 72% at 60% 0%, var(--iris-5) 0%, transparent 66%),
+    radial-gradient(58% 70% at 32% 8%, var(--iris-2) 0%, transparent 70%),
+    radial-gradient(54% 66% at 4% 18%, var(--iris-3) 0%, transparent 72%);
 
-  /* Groove — the only divider. 1px, fading at both ends. */
-  --groove-h: 1px;
-  --groove-line: linear-gradient(
-    90deg,
-    var(--groove-fade),
-    var(--groove) 12%,
-    var(--groove) 88%,
-    var(--groove-fade)
-  );
+  /* ══ Type ═════════════════════════════════════════════════════════════
+     Two faces. Space Grotesk carries every piece of display type, the
+     navigation and the labels; Archivo carries prose only. Both display
+     declarations name a grotesque fallback so the pre-load frame does not
+     reflow.                                                               */
 
-  /* Chevron band — the one authored ornament. Used only between major
-     registers, never more than three times on a page.                  */
-  --chevron-h: 9px;
-  --chevron-w: 18px;
-  --chevron-opacity: 0.62;
-  --chevron-cut:
-    linear-gradient(135deg, var(--brass) 25%, transparent 25.5%),
-    linear-gradient(225deg, var(--brass) 25%, transparent 25.5%);
+  --font-display: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-text: "Archivo", system-ui, sans-serif;
 
-  /* ══ Resting interaction timing (§4) ══════════════════════════════════
-     The only motion Stage 0 ships, because §2.6 specifies the brass
-     plate hover and active behaviour. Everything else in §4 is Stage 5. */
-  --rest-duration: 160ms;
-  --rest-ease: ease-out;
+  /* The display scale is fluid and set in one place. Every size below is a
+     clamp, so there are no breakpoint-specific font sizes anywhere else. */
+
+  /* hero — the one h1 per page */
+  --t-hero: clamp(3rem, 8.8vw, 7.25rem);
+  --t-hero-lh: 1.03;
+  --t-hero-tracking: -0.03em;
+  --t-hero-weight: 400;
+
+  /* statement — the full-bleed night declarations */
+  --t-statement: clamp(1.9rem, 4.4vw, 3.6rem);
+  --t-statement-lh: 1.08;
+  --t-statement-tracking: -0.02em;
+
+  /* section head */
+  --t-head: clamp(1.75rem, 3.6vw, 3rem);
+  --t-head-lh: 1.08;
+  --t-head-tracking: -0.02em;
+
+  /* card title */
+  --t-title: clamp(1.25rem, 1.9vw, 1.6rem);
+  --t-title-lh: 1.15;
+  --t-title-tracking: -0.01em;
+
+  /* counter — the big honest numerals */
+  --t-counter: clamp(3rem, 7vw, 5.75rem);
+  --t-counter-lh: 0.95;
+  --t-counter-tracking: -0.04em;
+
+  /* wordmark */
+  --t-mark: 0.8125rem;
+  --t-mark-tracking: 0.14em;
+  --t-mark-weight: 700;
+
+  /* prose */
+  --t-lede: clamp(1rem, 1.25vw, 1.125rem); /* hero standfirst, intros */
+  --t-lede-lh: 1.55;
+  --t-body: 1rem;
+  --t-body-lh: 1.65;
+  --t-note: 0.875rem;
+  --t-note-lh: 1.6;
+
+  /* apparatus — nav, labels, meta. Space Grotesk, never below 0.75rem. */
+  --t-nav: 1rem;
+  --t-label: 0.75rem;
+  --t-label-tracking: 0.1em;
+
+  /* measures */
+  --measure-lede: 34ch;
+  --measure-body: 62ch;
+  --measure-note: 46ch;
+
+  /* ══ Space ════════════════════════════════════════════════════════════ */
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --shell: 86rem; /* content max width */
+
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+
+  /* vertical rhythm between major bands */
+  --band: clamp(4.5rem, 10vw, 9rem);
+
+  /* ══ Form ═════════════════════════════════════════════════════════════
+     Corners are effectively square. 2px is the whole radius vocabulary;
+     anything rounder reads as a template.                                 */
+  --radius: 2px;
+  --stroke: 2px;
+
+  /* ══ Motion ═══════════════════════════════════════════════════════════ */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --fast: 180ms;
+  --slow: 620ms;
 }
