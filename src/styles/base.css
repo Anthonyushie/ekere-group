@@ -55,11 +55,17 @@ body {
   background: var(--vignette);
 }
 
-/* Everything that is not material sits above it. */
+/* Everything that is not material sits above it.
+
+   §2.3's 1296px is the width of the content, not of the box the gutter is
+   cut out of: at 1440 the approved comp runs its content from 72 to 1368,
+   which is 1296 between two 72px gutters. Capping the outer box instead
+   starves the declaration's right column to its 260px floor and pushes the
+   headline past the track it is given — the failure §2.3 names. */
 .sheet {
   position: relative;
   z-index: 1;
-  max-width: var(--content-max);
+  max-width: calc(var(--content-max) + var(--gutter) * 2);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }

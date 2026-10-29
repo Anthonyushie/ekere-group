@@ -1,0 +1,356 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   The site surfaces. Stage 1: the home first viewport.
+
+   Two kinds of value live here and nothing else:
+
+   1. The §3 mechanics — reserved slots, recency in ink density, the reverse
+      side. These are the direction's actual content, not decoration.
+   2. The composition metrics of the approved comp at
+      .impeccable/mocks/decision/assigned.html, which is a spatial contract.
+      They are register geometry — the fixed cuts in the beam — not §2.3
+      spacing, so they are scoped to .view-first as local properties and
+      never written onto :root, where they would read as tokens.
+
+   No colour is authored here. Every one reads from a §2.1 token, and the
+   alphas the comp expresses as "colour at alpha" are derived with color-mix
+   so they track the token rather than drifting from it, as Stage 0 does.
+   ────────────────────────────────────────────────────────────────────── */
+
+.view-first {
+  /* Register geometry, read off the approved comp. */
+  --masthead-h: 86px;
+  --nav-gap: 38px;
+  --declare-above: 46px;
+  --declare-below: 40px;
+  --reg-gap: 28px;
+  --base-h: 98px;
+
+  /* §3.1 — fixed, not fractional. The handover note records that this grid
+     is §3.1 rather than §2, so it is not a token. */
+  --reg-cols: 62px 1fr var(--slot-w);
+
+  /* §3.2 — the recency wash. The gradient is specimened as .layer--wash in
+     src/styles/spec.css, which site routes do not import; this is a copy of
+     it, not a reach into the token sheet. The black ramps stay literal, as
+     the §2.5 vignette's do. */
+  --wash: linear-gradient(
+    90deg,
+    var(--iroko-wash),
+    rgba(0, 0, 0, 0.18) 62%,
+    rgba(0, 0, 0, 0)
+  );
+
+  /* §3.3 — the reverse face opens in 320ms. */
+  --reverse-ms: 320ms;
+  --reverse-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ══ Register 00 — the masthead ═════════════════════════════════════════ */
+
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  height: var(--masthead-h);
+}
+
+/* The brass dot in the wordmark. One of the three things brass is spent on. */
+.mark-dot {
+  color: var(--brass);
+}
+
+.masthead-nav {
+  display: flex;
+  gap: var(--nav-gap);
+}
+
+.masthead-link {
+  position: relative;
+  color: var(--bark);
+  text-decoration: none;
+  transition: color var(--rest-duration) var(--rest-ease);
+}
+
+.masthead-link[aria-current="page"] {
+  color: var(--sapwood);
+  font-weight: 600;
+}
+
+/* §4, resting interaction: the nav link underline grows from the left. */
+.masthead-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--rest-duration) var(--rest-ease);
+}
+
+.masthead-link:focus-visible {
+  color: var(--sapwood);
+}
+
+.masthead-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (hover: hover) {
+  .masthead-link:hover {
+    color: var(--sapwood);
+  }
+  .masthead-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ══ Register 01 — the declaration ═════════════════════════════════════ */
+
+.declare {
+  display: grid;
+  grid-template-columns: var(--declaration-cols);
+  gap: var(--declaration-gap);
+  align-items: end;
+  padding-block: var(--declare-above) var(--declare-below);
+}
+
+/* The third authored line, in brass. The em carries no italic here. */
+.declare-lift {
+  font-style: normal;
+  color: var(--brass);
+}
+
+/* The seat of operations, under a rule quieter than a register groove: a
+   groove divides registers, and this divides inside one. */
+.seat {
+  border-top: 1px solid color-mix(in srgb, var(--groove) 65%, transparent);
+  padding-top: var(--space-16);
+}
+
+/* The half of the standfirst the comp lifts out of the secondary ink. */
+.declare .t-standfirst strong {
+  color: var(--sapwood);
+  font-weight: 500;
+}
+
+/* The comp sets this label one step brighter than the address under it. It
+   uses an unnamed grey between --bark and --bark-dim; the Stage 0 hand-over
+   note says to pick a token rather than inline it, so it is --bark. */
+.seat-label {
+  color: var(--bark);
+}
+
+/* ══ Registers 02–04 — the ventures ════════════════════════════════════ */
+
+.registers {
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* §3.1 — reserved slots. Fixed height, never min-height: a venture with
+   nothing in it shows its own empty band rather than collapsing, so absence
+   is legible instead of hidden. A register is never display: none. */
+.reg {
+  display: grid;
+  grid-template-columns: var(--reg-cols);
+  gap: var(--reg-gap);
+  align-items: center;
+  height: var(--register-h);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  position: relative;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* §3.2 — recency in ink density, and the §4 resting interaction that
+   extends the same wash under the register the pointer is on. One register
+   carries it at full strength, and which one is computed from the venture
+   records, not written here. */
+.reg::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  /* The wash bleeds left out of the gutter entirely: at 1440 that is the
+     comp's own -72px, and above it, where the sheet stops growing, it keeps
+     running to the edge of the beam instead of stopping at the sheet and
+     leaving a seam. Overflow to the inline start is not scrollable, so this
+     cannot produce a horizontal scrollbar. */
+  left: calc(50% - 50vw);
+  right: calc(var(--gutter) * -1);
+  background: var(--wash);
+  opacity: 0;
+  transition: opacity var(--rest-duration) var(--rest-ease);
+}
+
+.reg-group--recent .reg::before {
+  opacity: 1;
+}
+
+.reg:focus-visible::before {
+  opacity: 0.55;
+}
+
+@media (hover: hover) {
+  .reg:hover::before {
+    opacity: 0.55;
+  }
+}
+
+.reg-ord {
+  align-self: center;
+}
+
+.reg-name {
+  display: block;
+  color: var(--sapwood);
+}
+
+/* The brightest incision on the page, on the register the group last moved
+   on. §3.2 again: this class is applied from the data. */
+.reg-group--recent .reg-name {
+  color: var(--sapwood-lift);
+}
+
+.reg-note {
+  display: block;
+  margin-top: var(--space-8);
+}
+
+/* The reserved status slot brightens with the register, §4. */
+.slot {
+  transition:
+    background-color var(--rest-duration) var(--rest-ease),
+    border-color var(--rest-duration) var(--rest-ease),
+    color var(--rest-duration) var(--rest-ease);
+}
+
+.reg:hover .slot--live,
+.reg:focus-visible .slot--live {
+  background: color-mix(in srgb, var(--brass) 18%, transparent);
+  border-color: color-mix(in srgb, var(--brass) 70%, transparent);
+}
+
+.reg:hover .slot--dev,
+.reg:focus-visible .slot--dev {
+  border-color: color-mix(in srgb, var(--oxblood) 85%, transparent);
+}
+
+/* Brighter, still dashed and still hollow. The dashed border is the design
+   doing the honesty work, and hover does not tidy it. */
+.reg:hover .slot--open,
+.reg:focus-visible .slot--open {
+  border-color: var(--bark-dim);
+  color: var(--bark-dim);
+}
+
+.reg:hover .slot--open .pip,
+.reg:focus-visible .slot--open .pip {
+  border-color: var(--bark-dim);
+}
+
+/* ══ §3.3 — the reverse side ═══════════════════════════════════════════ */
+
+/* A clip reveal rather than a height jump: the row goes 0fr to 1fr, so there
+   is no measured height and nothing to recalculate when the copy changes.
+   The panel sits on --iroko-deep and bleeds to the gutter, so it reads as a
+   recess cut into the beam rather than a card laid on it. */
+.reg-reverse {
+  display: grid;
+  grid-template-rows: 0fr;
+  background: var(--iroko-deep);
+  margin-inline: calc(var(--gutter) * -1);
+  transition: grid-template-rows var(--reverse-ms) var(--reverse-ease);
+}
+
+.reg-reverse[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+/* Collapsed, the panel is out of the accessibility tree as well as out of
+   sight: visibility, not opacity, and it waits for the close to finish. */
+.reg-reverse-clip {
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 0s linear var(--reverse-ms);
+}
+
+.reg-reverse[data-open="true"] .reg-reverse-clip {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* The reverse face keeps the register's own columns, so the fine print lines
+   up under the thing it qualifies. */
+.reg-reverse-content {
+  display: grid;
+  grid-template-columns: var(--reg-cols);
+  gap: var(--reg-gap);
+  padding: var(--space-32) var(--gutter);
+}
+
+.reg-reverse-fields {
+  grid-column: 2;
+  margin: 0;
+  display: grid;
+  gap: var(--space-24);
+}
+
+.reg-reverse-term {
+  margin: 0;
+}
+
+.reg-reverse-text {
+  margin: var(--space-8) 0 0;
+}
+
+.reg-reverse-reviewed {
+  grid-column: 3;
+}
+
+/* A missing fact renders as an explicit placeholder, §6.5 — and it renders
+   in the brief's own lower-case form, so it reads as the instruction it is
+   rather than as apparatus. */
+.reg-reverse-date {
+  margin: var(--space-8) 0 0;
+  line-height: var(--note-lh);
+  text-transform: none;
+}
+
+/* ══ Base register — the action ════════════════════════════════════════ */
+
+.base {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--base-h);
+}
+
+.base-note {
+  text-align: right;
+}
+
+/* ══ Reduced motion ═══════════════════════════════════════════════════════
+   The final state, immediately. §4. */
+
+@media (prefers-reduced-motion: reduce) {
+  .masthead-link,
+  .masthead-link::after,
+  .reg::before,
+  .slot,
+  .reg-reverse,
+  .reg-reverse-clip {
+    transition: none;
+  }
+}
