@@ -122,10 +122,21 @@ is the one real risk a site built on stage honesty runs.
 
 ## Motion
 
-Entrances are scroll-driven and the manifesto is scrubbed word by word as it
-travels the viewport, both after the reference. One rule governs the layer:
-**the page is finished without it.** Two gates enforce that, and nothing
-animates outside them:
+Everything animated lives in `src/styles/motion.css`, driven by two hooks in
+`src/components/useReveal.ts` — `useReveal` (enters once, on an observer) and
+`useScrollProgress` (publishes a 0→1 `--progress` for the stylesheet to read).
+
+| | What it does |
+|---|---|
+| Hero | bloom scales in, headline rises line by line out of a mask |
+| Bands | rise on entry; grids stagger their children |
+| Manifesto | scrubbed word by word as the block travels its own height |
+| Ledger | digits roll into place; the two rows drift against each other |
+| Orb | scales as the reader comes down onto it |
+| Venture cards | invert to night on hover, lift, and swap to the night status palette |
+
+One rule governs the layer: **the page is finished without it.** Two gates
+enforce that, and nothing animates outside them:
 
 | Gate | Covers | If it never fires |
 |---|---|---|
@@ -166,6 +177,14 @@ Both of these fail silently. Neither is obvious from reading the code.
 - **`.hero-line` sets `display: block` outside the media query on purpose.**
   Move it inside and the headline collapses to a single line for every reader
   who has asked for reduced motion.
+- **Hover for the venture cards lives entirely in `motion.css`.** It used to
+  be split with `site.css`, which is a separate bundle — two rules of equal
+  specificity in two bundles whose order is not guaranteed is a coin flip, so
+  all of it is in one file now. Keep it there.
+- **A card that inverts has to swap the status colours too.** The
+  light-ground green, amber and grey all land near 3.4:1 on night, which
+  fails for a label that size. `--stage-*-night` exists for this; the
+  measured pairs are in `tokens.css`.
 
 One more worth knowing: `new Date()` in a component breaks static prerendering
 in Next 16. The footer's copyright year is the constant `COPYRIGHT_YEAR` in

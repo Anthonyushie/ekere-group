@@ -61,6 +61,17 @@
   --stage-dev: #8a6a16;
   --stage-open: #6b6b6b;
 
+  /* The same three stages on night ground. A card inverts to night when the
+     reader points at it, and the light-ground greens and ambers above drop
+     to 3.4:1 against #171717 — fine for a heading, not for a status label.
+     Measured on #171717, light variant first:
+       live  #1f7a4d 3.37:1 → #63d899 10.08:1
+       dev   #8a6a16 3.55:1 → #e0b64a  9.36:1
+       open  #6b6b6b 3.36:1 → #a8a8a8  7.54:1 */
+  --stage-live-night: #63d899;
+  --stage-dev-night: #e0b64a;
+  --stage-open-night: #a8a8a8;
+
   /* ══ The iridescence ══════════════════════════════════════════════════
      One soft spectral wash: peach → mint → sky → lavender, all at low
      saturation so it reads as light on a surface rather than as colour.

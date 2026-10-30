@@ -180,31 +180,82 @@
   opacity: calc(0.565 + var(--t) * 0.435);
 }
 
-/* ══ The ledger ═════════════════════════════════════════════════════════
-   The reference counts its figures up from zero. Half of these figures
-   ARE zero — that is the point of the band — so a counter would sit dead
-   in two cells out of four while its neighbours span. The numerals roll
-   up out of a mask instead: the same mechanical read, and it works for a
-   zero.                                                                 */
+/* ══ The rolling figures ════════════════════════════════════════════════
+   Each digit is a strip of twenty numerals behind a one-digit window. The
+   landing transform is ungated and sits on the strip itself, so with no
+   script and no motion the correct digit is simply parked in the window;
+   the animation only supplies the travel to get there.                   */
 
-.ledger-cell dt {
+.odometer {
+  display: inline-flex;
+}
+
+.odo {
+  display: inline-block;
   overflow: hidden;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  /* One digit tall. The line box, not the font size: a strip of twenty
+     numerals has to advance by exactly one line per digit. */
+  height: 1lh;
 }
 
-.ledger-grid[data-shown="true"] dt {
-  animation: ek-line 820ms var(--ease) both;
+.odo-strip {
+  display: block;
+  /* Land on the SECOND cycle's copy of the digit, so every digit travels a
+     full ten places — including a zero, which would otherwise not move. */
+  transform: translateY(calc((10 + var(--d)) * -5%));
 }
 
-.ledger-grid[data-shown="true"] > *:nth-child(2) dt {
-  animation-delay: var(--step);
+.odo-strip > span {
+  display: block;
+  height: 1lh;
 }
-.ledger-grid[data-shown="true"] > *:nth-child(3) dt {
-  animation-delay: calc(var(--step) * 2);
+
+@keyframes ek-odo {
+  from {
+    transform: translateY(0);
+  }
 }
-.ledger-grid[data-shown="true"] > *:nth-child(4) dt {
-  animation-delay: calc(var(--step) * 3);
+
+@media (prefers-reduced-motion: no-preference) {
+  .ledger-grid[data-shown="true"] .odo-strip {
+    /* Later digits land after earlier ones, so the figure settles left to
+       right the way a mechanical counter does. */
+    animation: ek-odo 1200ms var(--ease) both;
+    animation-delay: calc(var(--col) * 110ms + var(--cell, 0) * 90ms);
+  }
+}
+
+/* ══ Scroll-linked scale and drift ══════════════════════════════════════
+   Both read `--progress` from a Scrub, and both default to their resting
+   value so an un-scrubbed page is simply the finished one.              */
+
+/* The orb grows as the reader comes down onto it. The reference does this
+   far harder — its torus fills the viewport — but that orb sits behind a
+   heading with nothing else in the band. This one shares its section with
+   body copy, so it travels about a fifth. */
+.orb-field .orb {
+  transform: scale(calc(0.86 + var(--progress, 0.14) * 0.14));
+}
+
+/* The ledger rows slide against each other as the band passes. The section
+   clips, so this can never widen the page. */
+.ledger-grid {
+  --drift: calc((var(--progress, 0.5) - 0.5) * 2);
+}
+
+/* Entrance and drift both want this element's `transform`, and the entrance
+   is the more specific of the two, so it would simply win and the drift
+   would never appear. These selectors carry `[data-shown="true"]` to outrank
+   it — which also sequences the two correctly: the cell rises into place
+   first, and only then starts to drift. */
+[data-reveal].ledger-grid[data-shown="true"] > *:nth-child(1),
+[data-reveal].ledger-grid[data-shown="true"] > *:nth-child(2) {
+  transform: translateX(calc(var(--drift) * 1.6vw));
+}
+
+[data-reveal].ledger-grid[data-shown="true"] > *:nth-child(3),
+[data-reveal].ledger-grid[data-shown="true"] > *:nth-child(4) {
+  transform: translateX(calc(var(--drift) * -1.6vw));
 }
 
 /* ══ Hover ══════════════════════════════════════════════════════════════
@@ -212,14 +263,64 @@
    they never hide anything, and the reduced-motion block in base.css
    already collapses their duration to nothing.                          */
 
+/* Pointing at a card inverts it to night and lifts it slightly out of the
+   row, after the reference. It is applied only to the venture cards, which
+   are buttons: the method cards are not interactive, and giving them the
+   same response would promise something that does not happen.
+
+   The invert works by reassigning the ink tokens inside the card rather
+   than by restating colours — the same mechanism the full-bleed `.night`
+   bands use, so a card and a band cannot drift apart. */
+.venture {
+  transition:
+    background-color var(--fast) var(--ease),
+    color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease),
+    transform var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
+}
+
+.venture:hover,
+.venture:focus-visible {
+  --ink: var(--night-ink);
+  --ink-mute: var(--night-mute);
+  --ink-faint: var(--night-mute);
+  --line: var(--line-night);
+  --line-soft: rgba(255, 255, 255, 0.1);
+  --canvas-sunk: #262626;
+  /* The "in development" pip is a ring punched out of the card's own
+     surface, so the surface colour has to follow the card. */
+  --paper: var(--night);
+
+  /* The status colours have to move too: the light-ground green and amber
+     sit near 3:1 on night, which is not enough for a label this small. */
+  --stage-live: var(--stage-live-night);
+  --stage-dev: var(--stage-dev-night);
+  --stage-open: var(--stage-open-night);
+
+  background: var(--night);
+  border-color: var(--night);
+  color: var(--night-ink);
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 1.25rem 3rem rgba(23, 23, 23, 0.16);
+}
+
+/* An open card is joined to its reverse face below it, so it must neither
+   lift nor scale away from it. It still inverts. */
+.venture[aria-expanded="true"]:hover,
+.venture[aria-expanded="true"]:focus-visible {
+  transform: none;
+}
+
 .venture .slot {
   transition:
+    color var(--fast) var(--ease),
     border-color var(--fast) var(--ease),
     background-color var(--fast) var(--ease);
 }
 
-.venture:hover .slot {
-  background: var(--canvas-sunk);
+.venture .pip {
+  transition: background-color var(--fast) var(--ease);
 }
 
 /* The ordinal slides a hair as the card lifts, so the card reads as one

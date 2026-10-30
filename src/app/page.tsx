@@ -1,9 +1,13 @@
+import type { CSSProperties } from "react";
+
 import Link from "next/link";
 
 import "@/styles/site.css";
 
 import { Masthead } from "@/components/Masthead";
+import { Odometer } from "@/components/Odometer";
 import { Reveal } from "@/components/Reveal";
+import { Scrub } from "@/components/Scrub";
 import { Statement } from "@/components/Statement";
 import { VentureRegisters } from "@/components/VentureRegisters";
 import { VENTURES } from "@/content/ventures";
@@ -188,9 +192,10 @@ export default function Home() {
         <section className="pause" aria-labelledby="pause-title">
           <Reveal className="shell" stagger>
             <p className="t-label">Our position</p>
-            <div className="orb-field">
+            {/* The orb grows as the reader comes down onto it. */}
+            <Scrub className="orb-field" from={0.95} to={0.15}>
               <div className="orb" aria-hidden="true" />
-            </div>
+            </Scrub>
             <h2 id="pause-title" className="t-statement">
               Structure, where a track record is not yet earned
             </h2>
@@ -213,15 +218,27 @@ export default function Home() {
               <p className="t-label">Including the zeros</p>
             </Reveal>
 
-            <Reveal as="dl" className="ledger-grid" stagger>
-              {ledger().map((cell) => (
-                <div key={cell.label} className="ledger-cell">
-                  <dt className="t-counter">{cell.figure}</dt>
-                  <dd className="t-label ledger-label">{cell.label}</dd>
-                  <p>{cell.note}</p>
-                </div>
-              ))}
-            </Reveal>
+            {/* Scrub outside, Reveal inside: `--progress` is a custom
+                property, so setting it on the wrapper is enough for the grid
+                to read it, and the two concerns stay in separate components
+                instead of one doing both. */}
+            <Scrub from={1} to={0}>
+              <Reveal as="dl" className="ledger-grid" stagger>
+                {ledger().map((cell, index) => (
+                  <div
+                    key={cell.label}
+                    className="ledger-cell"
+                    style={{ "--cell": index } as CSSProperties}
+                  >
+                    <dt className="t-counter">
+                      <Odometer value={cell.figure} />
+                    </dt>
+                    <dd className="t-label ledger-label">{cell.label}</dd>
+                    <p>{cell.note}</p>
+                  </div>
+                ))}
+              </Reveal>
+            </Scrub>
           </div>
         </section>
 
@@ -287,7 +304,7 @@ export default function Home() {
               </p>
             </div>
 
-            <nav className="footer-col" aria-label="Footer">
+            <nav className="footer-col footer-col--nav" aria-label="Footer">
               <p className="t-label">The group</p>
               <ul>
                 {FOOTER_NAV.map((item) => (

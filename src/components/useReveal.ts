@@ -66,3 +66,70 @@ export function useReveal<T extends HTMLElement>() {
 
   return ref;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Scroll progress.
+
+   Writes a 0→1 `--progress` onto an element as it travels the viewport, and
+   nothing else. Three things read it — the scrubbed statement, the orb's
+   scale and the ledger's drift — so the arithmetic lives here once.
+
+   `from` and `to` are viewport fractions measured against the element's top
+   edge. `spanHeight` subtracts the element's own height from the end, which
+   turns "finishes when the top reaches here" into "finishes when the BOTTOM
+   reaches here" — the difference between a long paragraph lighting in a few
+   hundred pixels and lighting over its own length.
+
+   Work is rAF-coalesced and touches one custom property, so scrolling never
+   triggers a React render. As with useReveal, nothing happens at all when
+   motion is unwanted, and every stylesheet that reads `--progress` supplies
+   a resting default for exactly that case.
+   ────────────────────────────────────────────────────────────────────── */
+
+export function useScrollProgress<T extends HTMLElement>({
+  from,
+  to,
+  spanHeight = false,
+}: {
+  from: number;
+  to: number;
+  spanHeight?: boolean;
+}) {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || !motionAllowed()) return;
+
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const box = element.getBoundingClientRect();
+      const view = window.innerHeight;
+      const start = view * from;
+      const end = view * to - (spanHeight ? box.height : 0);
+      const progress = (start - box.top) / (start - end);
+      element.style.setProperty(
+        "--progress",
+        String(Math.min(1, Math.max(0, progress))),
+      );
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [from, to, spanHeight]);
+
+  return ref;
+}
