@@ -705,6 +705,17 @@
   letter-spacing: -0.01em;
 }
 
+/* Contact entries: a small label over each value. */
+.footer-contact li {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.footer-contact-value {
+  color: var(--night-mute);
+  font-family: var(--font-display);
+}
+
 .footer-base {
   display: flex;
   flex-wrap: wrap;

@@ -8,6 +8,7 @@ import { Masthead } from "@/components/Masthead";
 import { Odometer } from "@/components/Odometer";
 import { Reveal } from "@/components/Reveal";
 import { Scrub } from "@/components/Scrub";
+import { SiteFooter } from "@/components/SiteFooter";
 import { Statement } from "@/components/Statement";
 import { VentureRegisters } from "@/components/VentureRegisters";
 import { VENTURES } from "@/content/ventures";
@@ -49,25 +50,6 @@ const METHOD = [
     title: "Enterprise that does not cost people their health",
     body: "The group exists on the belief that long-term value and public harm are not a trade to be made. Where a venture cannot clear that test, we do not pursue it.",
   },
-];
-
-const FOOTER_NAV = [
-  { label: "About us", href: "/about-us/" },
-  { label: "Our ventures", href: "/our-ventures/" },
-  { label: "Our impact", href: "/our-impact/" },
-  { label: "Contact", href: "/contact/" },
-];
-
-/*
- * Held as a constant rather than read from `new Date()`. Next refuses to
- * prerender the current time, and a self-updating copyright year is not
- * worth making the whole home page dynamic for. Bump it each January.
- */
-const COPYRIGHT_YEAR = 2026;
-
-const FOOTER_LEGAL = [
-  { label: "Privacy", href: "/privacy/" },
-  { label: "Terms", href: "/terms/" },
 ];
 
 /**
@@ -292,58 +274,7 @@ export default function Home() {
       </main>
 
       {/* ── 08 — Footer ──────────────────────────────────────────────── */}
-      <footer className="night footer">
-        <div className="shell">
-          <div className="footer-grid">
-            <div className="footer-mark">
-              <p className="mark-word">Ekere Group</p>
-              <p className="t-note">
-                Port Harcourt · Rivers State
-                <br />
-                Federal Republic of Nigeria
-              </p>
-            </div>
-
-            <nav className="footer-col footer-col--nav" aria-label="Footer">
-              <p className="t-label">The group</p>
-              <ul>
-                {FOOTER_NAV.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href}>{item.label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            <div className="footer-col">
-              <p className="t-label">Contact</p>
-              {/* These are the facts PRODUCT.md records as unverified. They
-                  ship as explicit placeholders rather than as plausible
-                  filler: an invented address is the one mistake this site
-                  cannot afford. */}
-              <ul>
-                <li className="t-note">[VERIFY: official email address]</li>
-                <li className="t-note">[VERIFY: telephone number]</li>
-                <li className="t-note">[VERIFY: postal address]</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="footer-base">
-            <p className="t-label">
-              © {COPYRIGHT_YEAR} Ekere Group. All rights reserved.
-            </p>
-            <p className="t-label footer-legal">
-              {FOOTER_LEGAL.map((item, index) => (
-                <span key={item.href}>
-                  {index > 0 ? " · " : ""}
-                  <Link href={item.href}>{item.label}</Link>
-                </span>
-              ))}
-            </p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

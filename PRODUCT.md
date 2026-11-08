@@ -45,7 +45,8 @@ A purpose-driven parent company: the group's stated reason for existing is that 
 - News & Insights ships only if there is genuine content; otherwise it is built but unpublished and kept out of the navigation.
 - A working contact form with an enquiry-type field is required for launch. Enquiry types: General, Business Opportunity, Partnership Proposal, Community Initiative, Environmental Project, Other.
 - Privacy Policy and Terms of Use must reflect actual data collection.
-- **Undecided / unverified:** legal registration details, official postal address, verified telephone number, official email address, social accounts, founder name and title, domain arrangement for ekeregroup.org, whether individual venture sub-pages are needed at launch. None of these may be invented; all must ship as explicit placeholders the user fills in.
+- **Supplied (Nov 2026):** email info@ekeregroup.org, telephone +234 (0)810 915 4135, postcode 500102; About Us, vision and mission copy.
+- **Undecided / unverified:** legal registration details, full street address (postcode 500102 supplied), social accounts, founder name and title, domain arrangement for ekeregroup.org, whether individual venture sub-pages are needed at launch. None of these may be invented; all must ship as explicit placeholders the user fills in.
 
 ## Brand Commitments
 
